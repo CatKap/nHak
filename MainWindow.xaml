@@ -1,0 +1,566 @@
+﻿<Window x:Class="EmotionAnalyzer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Анализатор эмоций" 
+        Height="900" 
+        Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E1E"
+        Foreground="White">
+
+    <Window.Resources>
+        <!-- Стили для окон -->
+        <Style x:Key="WindowContainerStyle" TargetType="Border">
+            <Setter Property="Background" Value="#2D2D30"/>
+            <Setter Property="BorderBrush" Value="#3E3E42"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style x:Key="WindowHeaderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#252526"/>
+            <Setter Property="CornerRadius" Value="8,8,0,0"/>
+            <Setter Property="Padding" Value="10,5"/>
+        </Style>
+
+        <Style x:Key="WindowTitleStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ContentAreaStyle" TargetType="Border">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="CornerRadius" Value="0,0,8,8"/>
+            <Setter Property="Padding" Value="10"/>
+        </Style>
+
+        <!-- Общий стиль для кнопок -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3E3E42"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#007ACC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                Padding="8,4">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#007ACC"/>
+                                <Setter Property="BorderBrush" Value="#005A9E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#005A9E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ProgressBar -->
+        <Style TargetType="ProgressBar">
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Background" Value="#3E3E42"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,5,0,10"/>
+        </Style>
+
+        <!-- Стиль для TextBlock -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#1E1E1E">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>    <!-- Панель заголовка -->
+            <RowDefinition Height="*"/>       <!-- Основное содержание -->
+            <RowDefinition Height="Auto"/>    <!-- Общий график -->
+        </Grid.RowDefinitions>
+
+        <!-- Панель заголовка и управления -->
+        <Border Grid.Row="0" Background="#007ACC" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Логотип и название -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="🎭" FontSize="20" Margin="0,0,10,0"/>
+                    <TextBlock Text="Анализатор эмоций" 
+                               FontSize="18" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Центральные кнопки управления -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="📁 Загрузить видео" 
+                            Width="140"
+                            Height="32"
+                            x:Name="LoadVideoButton"/>
+                    
+                    <Button Content="▶ Начать анализ" 
+                            Width="140"
+                            Height="32"
+                            Background="#107C10"
+                            x:Name="StartAnalysisButton"/>
+                    
+                    <Button Content="📊 Экспорт данных" 
+                            Width="140"
+                            Height="32"
+                            x:Name="ExportDataButton"/>
+                </StackPanel>
+
+                <!-- Статус -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <TextBlock Text="Статус:" 
+                               VerticalAlignment="Center" 
+                               Margin="0,0,10,0"/>
+                    <TextBlock Text="Готов" 
+                               VerticalAlignment="Center" 
+                               FontWeight="Bold"
+                               x:Name="StatusText"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Основная область: Видео + Панель эмоций -->
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>   <!-- Видео (большая часть) -->
+                <ColumnDefinition Width="*"/>    <!-- Панель эмоций (правая часть) -->
+            </Grid.ColumnDefinitions>
+
+            <!-- ЛЕВАЯ ЧАСТЬ: ДОМИНИРУЮЩЕЕ ВИДЕО -->
+            <Border Grid.Column="0" Style="{StaticResource WindowContainerStyle}" Margin="0,0,5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Заголовок видео -->
+                    <Border Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
+                        <Grid>
+                            <TextBlock Text="🎬 ВИДЕО" Style="{StaticResource WindowTitleStyle}"/>
+                            <TextBlock Text="Нет видео" 
+                                       HorizontalAlignment="Right" 
+                                       Foreground="#888"
+                                       x:Name="VideoFileNameText"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Область видео -->
+                    <Border Grid.Row="1" Style="{StaticResource ContentAreaStyle}">
+                        <Grid>
+                            <!-- Видеоплеер -->
+                            <Border Background="#000" 
+                                    CornerRadius="5"
+                                    BorderBrush="#3E3E42"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <!-- MediaElement для воспроизведения -->
+                                    <MediaElement x:Name="VideoPlayer"
+                                                  LoadedBehavior="Manual"
+                                                  UnloadedBehavior="Stop"/>
+                                    
+                                    <!-- Overlay если видео не загружено -->
+                                    <Border Background="#80000000">
+                                        <TextBlock Text="Загрузите видео для анализа"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="White"
+                                                   FontSize="16"
+                                                   FontStyle="Italic"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <!-- Элементы управления поверх видео -->
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Bottom"
+                                        Margin="0,0,0,20">
+                                <Button Content="⏮" 
+                                        Width="40" 
+                                        Height="40"
+                                        FontSize="16"
+                                        x:Name="RewindButton"/>
+                                
+                                <Button Content="▶" 
+                                        Width="50" 
+                                        Height="50"
+                                        FontSize="18"
+                                        Margin="10,0"
+                                        x:Name="PlayButton"/>
+                                
+                                <Button Content="⏸" 
+                                        Width="40" 
+                                        Height="40"
+                                        FontSize="16"
+                                        x:Name="PauseButton"/>
+                                
+                                <Button Content="⏹" 
+                                        Width="40" 
+                                        Height="40"
+                                        FontSize="16"
+                                        Margin="10,0"
+                                        x:Name="StopButton"/>
+                                
+                                <Button Content="⏭" 
+                                        Width="40" 
+                                        Height="40"
+                                        FontSize="16"
+                                        x:Name="FastForwardButton"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Таймлайн и время -->
+                    <Border Grid.Row="2" Background="#252526" Padding="10,5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Слайдер времени -->
+                            <Slider Grid.Row="0"
+                                    x:Name="VideoTimeline"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    Value="0"
+                                    Margin="0,0,0,5"/>
+
+                            <!-- Время -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="00:00" 
+                                           Grid.Column="0"
+                                           x:Name="CurrentTimeText"/>
+                                
+                                <TextBlock Text="--:-- / --:--" 
+                                           Grid.Column="1"
+                                           HorizontalAlignment="Center"
+                                           x:Name="TimeDisplayText"/>
+                                
+                                <TextBlock Text="00:00" 
+                                           Grid.Column="2"
+                                           HorizontalAlignment="Right"
+                                           x:Name="TotalTimeText"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ПРАВАЯ ЧАСТЬ: ПАНЕЛЬ ЭМОЦИЙ -->
+            <Border Grid.Column="1" Style="{StaticResource WindowContainerStyle}" Margin="5,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Заголовок эмоций -->
+                    <Border Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
+                        <TextBlock Text="😊 ЭМОЦИИ" Style="{StaticResource WindowTitleStyle}"/>
+                    </Border>
+
+                    <!-- Содержимое эмоций -->
+                    <Border Grid.Row="1" Style="{StaticResource ContentAreaStyle}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Текущие эмоции -->
+                                <Border Background="#252526" 
+                                        CornerRadius="5" 
+                                        Padding="10"
+                                        Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock Text="Текущий кадр" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="13"
+                                                   Margin="0,0,0,10"/>
+                                        
+                                        <!-- Радость -->
+                                        <Grid Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Text="😊" 
+                                                       Grid.Column="0" 
+                                                       Margin="0,0,10,0"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="Радость" 
+                                                       Grid.Column="1" 
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="75%" 
+                                                       Grid.Column="2" 
+                                                       HorizontalAlignment="Right"
+                                                       x:Name="JoyPercentageText"/>
+                                        </Grid>
+                                        <ProgressBar Value="75" 
+                                                     Maximum="100"
+                                                     Foreground="#FFD700"
+                                                     x:Name="JoyProgressBar"/>
+
+                                        <!-- Грусть -->
+                                        <Grid Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Text="😢" 
+                                                       Grid.Column="0" 
+                                                       Margin="0,0,10,0"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="Грусть" 
+                                                       Grid.Column="1" 
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="20%" 
+                                                       Grid.Column="2" 
+                                                       HorizontalAlignment="Right"
+                                                       x:Name="SadnessPercentageText"/>
+                                        </Grid>
+                                        <ProgressBar Value="20" 
+                                                     Maximum="100"
+                                                     Foreground="#1E90FF"
+                                                     x:Name="SadnessProgressBar"/>
+
+                                        <!-- Гнев -->
+                                        <Grid Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Text="😠" 
+                                                       Grid.Column="0" 
+                                                       Margin="0,0,10,0"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="Гнев" 
+                                                       Grid.Column="1" 
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="5%" 
+                                                       Grid.Column="2" 
+                                                       HorizontalAlignment="Right"
+                                                       x:Name="AngerPercentageText"/>
+                                        </Grid>
+                                        <ProgressBar Value="5" 
+                                                     Maximum="100"
+                                                     Foreground="#FF4500"
+                                                     x:Name="AngerProgressBar"/>
+
+                                        <!-- Удивление -->
+                                        <Grid Margin="0,0,0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="50"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Text="😲" 
+                                                       Grid.Column="0" 
+                                                       Margin="0,0,10,0"
+                                                       FontSize="16"/>
+                                            <TextBlock Text="Удивление" 
+                                                       Grid.Column="1" 
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="0%" 
+                                                       Grid.Column="2" 
+                                                       HorizontalAlignment="Right"
+                                                       x:Name="SurprisePercentageText"/>
+                                        </Grid>
+                                        <ProgressBar Value="0" 
+                                                     Maximum="100"
+                                                     Foreground="#9370DB"
+                                                     x:Name="SurpriseProgressBar"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Статистика анализа -->
+                                <Border Background="#252526" 
+                                        CornerRadius="5"
+                                        Padding="10"
+                                        Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock Text="📊 Статистика" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="13"
+                                                   Margin="0,0,0,10"/>
+                                        
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            
+                                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Проанализировано:"/>
+                                                <TextBlock Text="0 кадров" 
+                                                           Grid.Column="1"
+                                                           FontWeight="Bold"
+                                                           x:Name="FramesAnalyzedText"/>
+                                            </Grid>
+                                            
+                                            <Grid Grid.Row="1" Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Доминирующая:"/>
+                                                <TextBlock Text="-" 
+                                                           Grid.Column="1" 
+                                                           Foreground="#FFD700"
+                                                           FontWeight="Bold"
+                                                           x:Name="DominantEmotionText"/>
+                                            </Grid>
+                                            
+                                            <Grid Grid.Row="2" Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Уверенность:"/>
+                                                <TextBlock Text="0%" 
+                                                           Grid.Column="1"
+                                                           x:Name="ConfidenceText"/>
+                                            </Grid>
+                                            
+                                            <Grid Grid.Row="3">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Время анализа:"/>
+                                                <TextBlock Text="0:00" 
+                                                           Grid.Column="1"
+                                                           x:Name="AnalysisTimeText"/>
+                                            </Grid>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Управление анализом -->
+                                <Border Background="#252526" 
+                                        CornerRadius="5"
+                                        Padding="10">
+                                    <StackPanel>
+                                        <TextBlock Text="⚙ Настройки" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="13"
+                                                   Margin="0,0,0,10"/>
+                                        
+                                        <CheckBox Content="Автоанализ" 
+                                                  IsChecked="True"
+                                                  Margin="0,0,0,8"/>
+                                        <CheckBox Content="Показывать все эмоции" 
+                                                  IsChecked="True"
+                                                  Margin="0,0,0,10"/>
+                                        
+                                        <TextBlock Text="Интервал анализа:" 
+                                                   Margin="0,0,0,5"/>
+                                        <Slider Minimum="1" 
+                                                Maximum="30" 
+                                                Value="5"
+                                                TickFrequency="1"
+                                                IsSnapToTickEnabled="True"
+                                                Margin="0,0,0,8"/>
+                                        <TextBlock Text="5 кадр/сек"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="#888"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- НИЖНЯЯ ЧАСТЬ: ОБЩИЙ ГРАФИК -->
+        <Border Grid.Row="2" Style="{StaticResource WindowContainerStyle}" Margin="10,5,10,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок общего графика -->
+                <Border Grid.Row="0" Style="{StaticResource WindowHeaderStyle}">
+                    <Grid>
+                        <TextBlock Text="📈 ОБЩИЙ ГРАФИК ЭМОЦИЙ" Style="{StaticResource WindowTitleStyle}"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Линейный" Width="80" Margin="0,0,5,0"/>
+                            <Button Content="Столбчатый" Width="80" Margin="0,0,5,0"/>
+                            <Button Content="Круговой" Width="80"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Область графика -->
+                <Border Grid.Row="1" Style="{StaticResource ContentAreaStyle}">
+                    <Border Background="#252526" 
+                            CornerRadius="5"
+                            BorderBrush="#3E3E42"
+                            BorderThickness="1"
+                            Padding="20">
+                        <Grid>
+                            <!-- Заглушка для графика -->
+                            <TextBlock Text="График распределения эмоций по времени"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="#888"
+                                       FontSize="16"
+                                       FontStyle="Italic"/>
+                            
+                            <!-- Здесь будет реальный график -->
+                            <Canvas x:Name="OverallGraphCanvas">
+                                <!-- График будет отрисован программно -->
+                            </Canvas>
+                        </Grid>
+                    </Border>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
