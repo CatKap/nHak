@@ -1,0 +1,160 @@
+﻿<Window x:Class="ScenaryBuilder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Создать сценарий"
+        Height="250" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="Segoe UI">
+
+
+    <Window.Resources>
+        <!-- Стиль для TextBox с подсветкой -->
+        <Style TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#A9B7C6"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#3D3E40"
+                                BorderThickness="1"
+                                CornerRadius="5">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3574EF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#3574EF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для кнопок -->
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#191A1C"/>
+            <Setter Property="BorderBrush" Value="#3D3E40"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3574EF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+     <Border Background="#191A1C" CornerRadius="12" BorderBrush="#3D3E40" BorderThickness="1" ClipToBounds="True">
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/> <!-- Шапка -->
+                <RowDefinition Height="*"/>  <!-- Содержимое -->
+            </Grid.RowDefinitions>
+
+            <!-- Кастомная шапка -->
+            <DockPanel Grid.Row="0" Background="Transparent" MouseDown="TitleBar_MouseDown">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
+                    <Image Source="pack://application:,,,/Resources/dreamer_logo.ico" Width="18" Height="18"/>
+                    <TextBlock Text="Создать сценарий" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0"/>
+                </StackPanel>
+
+                <Button Width="34" Height="34" DockPanel.Dock="Right" 
+                        Background="Transparent" BorderBrush="Transparent"
+                        Click="CloseButton_Click" HorizontalAlignment="Right">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <Image Source="pack://application:,,,/Resources/close.ico" 
+                                       Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="BorderBrush" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+
+            </DockPanel>
+
+            <!-- Основное содержимое окна -->
+            <Grid Grid.Row="1" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Имя сценария -->
+                <TextBlock Text="Имя сценария:" Foreground="White" VerticalAlignment="Center" Margin="0,0,10,0"
+                           Grid.Row="0" Grid.Column="0"/>
+                <TextBox Name="ProjectNameTextBox"
+                         Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                         HorizontalAlignment="Stretch"
+                         CaretBrush="White"/>
+
+                <!-- Путь проекта -->
+                <TextBlock Text="Путь:" Foreground="White" VerticalAlignment="Center" Margin="0,10,10,0"
+                           Grid.Row="1" Grid.Column="0"/>
+                <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Name="ProjectPathTextBox" Grid.Column="0"
+                             HorizontalAlignment="Stretch"
+                             Margin="0,0,10,0"
+                             CaretBrush="White"/>
+                    <Button Content="Обзор..." Width="80" Height="28" Grid.Column="1" VerticalAlignment="Center" Click="BrowseButton_Click"/>
+                </Grid>
+
+                <!-- Кнопки снизу -->
+                <Button Content="Открыть сценарий" Width="130" Grid.Row="2" Grid.Column="0"
+                        HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="OpenButton_Click"/>
+                <Button Content="Создать" Width="100" Grid.Row="2" Grid.Column="2"
+                        Background="#3574EF" BorderBrush="Transparent" BorderThickness="2" FontWeight="Bold"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CreateButton_Click"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
