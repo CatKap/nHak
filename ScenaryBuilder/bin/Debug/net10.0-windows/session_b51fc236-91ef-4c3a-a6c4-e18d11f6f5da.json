@@ -1,0 +1,601 @@
+{
+  "session_id": "b51fc236-91ef-4c3a-a6c4-e18d11f6f5da",
+  "video_name": "\u041F\u0443\u0442\u0438\u043D \u043E\u0442\u0432\u0435\u0442\u0438\u043B \u0411\u0430\u0439\u0434\u0435\u043D\u0443 \u043F\u0440\u043E \u00AB\u0441\u0443\u043A\u0438\u043D\u0430 \u0441\u044B\u043D\u0430\u00BB.mp4",
+  "video_duration": 99,
+  "start_time": 1764967620975,
+  "end_time": 1764967985005,
+  "events": [
+    {
+      "timestamp": 1764967620975,
+      "event_type": 0,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "session_start",
+        "video_duration": 99
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967620982,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 8.1620024
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967624576,
+      "event_type": 0,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967626171,
+      "event_type": 0,
+      "video_time": 1.4808124,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967628293,
+      "event_type": 1,
+      "video_time": 3.6200003,
+      "duration": 2.1203398,
+      "value": null,
+      "metadata": {
+        "pause_reason": "user_action"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967629608,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 8.633,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 8.633
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967631648,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 0,
+      "value": null,
+      "metadata": {
+        "action": "window_focused"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967632615,
+      "event_type": 0,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967640354,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 6.6593372
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967641363,
+      "event_type": 0,
+      "video_time": 12.2511889,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967643140,
+      "event_type": 1,
+      "video_time": 14.0400014,
+      "duration": 1.7751198,
+      "value": null,
+      "metadata": {
+        "pause_reason": "user_action"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967644031,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 12.383,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 12.383
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967645399,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 0,
+      "value": null,
+      "metadata": {
+        "action": "window_focused"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967653590,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 8.191,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 8.191
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967671561,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 0,
+      "value": null,
+      "metadata": {
+        "action": "window_focused"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967671583,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 19.6733496
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967672822,
+      "event_type": 0,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967678491,
+      "event_type": 0,
+      "video_time": 19.2911689,
+      "duration": null,
+      "value": null,
+      "metadata": {},
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967679363,
+      "event_type": 1,
+      "video_time": 20.1800023,
+      "duration": 0.8703095,
+      "value": null,
+      "metadata": {
+        "pause_reason": "user_action"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967679707,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 8.146,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 8.146
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967726886,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 0,
+      "value": null,
+      "metadata": {
+        "action": "window_focused"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967727180,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 47.4435475
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967806040,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 78.692835
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967806985,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 80.099,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 80.099
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967977589,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 0,
+      "value": null,
+      "metadata": {
+        "action": "window_focused"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967977936,
+      "event_type": 9,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "mouse_move_after_idle",
+        "idle_duration": 171.7642456
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967984834,
+      "event_type": 7,
+      "video_time": 0,
+      "duration": 7.245,
+      "value": null,
+      "metadata": {
+        "action": "window_lost_focus",
+        "duration": 7.245
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    },
+    {
+      "timestamp": 1764967985005,
+      "event_type": 0,
+      "video_time": 0,
+      "duration": null,
+      "value": null,
+      "metadata": {
+        "action": "session_end"
+      },
+      "emotion_data": {
+        "joy": 0,
+        "sadness": 0,
+        "anger": 0,
+        "surprise": 0,
+        "neutral": 0,
+        "dominant_emotion": null,
+        "confidence": 0
+      }
+    }
+  ],
+  "window_focus": [
+    {
+      "start": 1764967620975,
+      "end": 1764967629608,
+      "duration": 1764967629.608
+    },
+    {
+      "start": 1764967631648,
+      "end": 1764967644031,
+      "duration": 1764967644.031
+    },
+    {
+      "start": 1764967645399,
+      "end": 1764967653590,
+      "duration": 1764967653.59
+    },
+    {
+      "start": 1764967671561,
+      "end": 1764967679707,
+      "duration": 1764967679.707
+    },
+    {
+      "start": 1764967726886,
+      "end": 1764967806985,
+      "duration": 1764967806.985
+    },
+    {
+      "start": 1764967977589,
+      "end": 1764967985005,
+      "duration": 1764967985.005
+    }
+  ],
+  "summary": {
+    "total_pauses": 3,
+    "total_pause_time": 4.7657691,
+    "average_pause_duration": 1.5885897,
+    "skip_forward_count": 0,
+    "skip_backward_count": 0,
+    "total_skip_time": 0,
+    "rewatch_segments": [
+      {
+        "start": 0,
+        "end": 1.4808124,
+        "watch_count": 1
+      },
+      {
+        "start": 0,
+        "end": 12.2511889,
+        "watch_count": 1
+      },
+      {
+        "start": 0,
+        "end": 19.2911689,
+        "watch_count": 1
+      }
+    ],
+    "attention_percentage": 599.9999143834895,
+    "engagement_score": 100
+  }
+}
