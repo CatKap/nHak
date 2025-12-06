@@ -46,4 +46,9 @@
       <Resource Include="Resources\pause.ico" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="EmStArtifacts" Version="1.0.11" />
+      <PackageReference Include="XNeuroSDK" Version="1.0.9.4" />
+    </ItemGroup>
+
 </Project>

@@ -1,11 +1,206 @@
 {
   "version": 3,
   "targets": {
-    "net10.0-windows7.0": {}
+    "net10.0-windows7.0": {
+      "EmStArtifacts/1.0.11": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/EmStArtifacts.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/EmStArtifacts.dll": {}
+        },
+        "build": {
+          "build/EmStArtifacts.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/em_st_artifacts-x64.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/em_st_artifacts-x86.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      },
+      "XNeuroSDK/1.0.9.4": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/XNeuroSDK.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/XNeuroSDK.dll": {}
+        },
+        "build": {
+          "build/XNeuroSDK.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/win-x64/native/neurosdk2-x64.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x86/native/neurosdk2-x32.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
+          }
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "EmStArtifacts/1.0.11": {
+      "sha512": "hZPJcHqaFgk+CvAz99XwNmYE7o7pk0O2A0Fltlv8z37hDcE4oQJCmRdDfUTXnqmqWI7NovucaIfEQqkb7Z4PFQ==",
+      "type": "package",
+      "path": "emstartifacts/1.0.11",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "build/EmStArtifacts.targets",
+        "emstartifacts.1.0.11.nupkg.sha512",
+        "emstartifacts.nuspec",
+        "lib/net48/EmStArtifacts.dll",
+        "lib/net8.0-android34.0/EmStArtifacts.dll",
+        "lib/net8.0-android34.0/EmStArtifacts.pdb",
+        "lib/net8.0-android34.0/EmStArtifacts.xml",
+        "lib/net8.0-android34.0/em_st_artifacts-release.aar",
+        "lib/net8.0-ios13.0/EmStArtifacts.dll",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/Info.plist",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/EmStArtifacts",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMEmotionalMath.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMHelpers.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMMathLibModuleExport.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMTypes.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/common_api.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/lib_export.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Info.plist",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Modules/module.modulemap",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/EmStArtifacts",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMEmotionalMath.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMHelpers.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMMathLibModuleExport.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMTypes.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/common_api.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/lib_export.h",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Info.plist",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Modules/module.modulemap",
+        "lib/net8.0-ios13.0/EmStArtifacts.resources/manifest",
+        "lib/net8.0-maccatalyst14.0/EmStArtifacts.dll",
+        "lib/net8.0-maccatalyst14.0/EmStArtifacts.resources.zip",
+        "lib/net8.0-windows10.0.19041.0/EmStArtifacts.dll",
+        "lib/net8.0/EmStArtifacts.dll",
+        "lib/net9.0-android35.0/EmStArtifacts.dll",
+        "lib/net9.0-android35.0/EmStArtifacts.pdb",
+        "lib/net9.0-android35.0/EmStArtifacts.xml",
+        "lib/net9.0-android35.0/em_st_artifacts-release.aar",
+        "lib/net9.0-ios15.0/EmStArtifacts.dll",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/Info.plist",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/EmStArtifacts",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMEmotionalMath.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMHelpers.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMMathLibModuleExport.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/EMTypes.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/common_api.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Headers/lib_export.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Info.plist",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64/EmStArtifacts.framework/Modules/module.modulemap",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/EmStArtifacts",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMEmotionalMath.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMHelpers.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMMathLibModuleExport.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/EMTypes.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/common_api.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Headers/lib_export.h",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Info.plist",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/EmStArtifacts.xcframework/ios-arm64_x86_64-simulator/EmStArtifacts.framework/Modules/module.modulemap",
+        "lib/net9.0-ios15.0/EmStArtifacts.resources/manifest",
+        "lib/net9.0-maccatalyst15.0/EmStArtifacts.dll",
+        "lib/net9.0-maccatalyst15.0/EmStArtifacts.resources.zip",
+        "lib/net9.0-windows10.0.19041.0/EmStArtifacts.dll",
+        "lib/net9.0/EmStArtifacts.dll",
+        "lib/netstandard2.0/EmStArtifacts.dll",
+        "runtimes/win-x64/native/em_st_artifacts-x64.dll",
+        "runtimes/win-x86/native/em_st_artifacts-x86.dll"
+      ]
+    },
+    "XNeuroSDK/1.0.9.4": {
+      "sha512": "rSojvSuQ9dMEU6eOge9gUujyW0K0/bkgPRsyJhS3VqMdeWNxwnnJ0bMY0VVc/Svg7EtF78LJKYFl5evTx9zwAA==",
+      "type": "package",
+      "path": "xneurosdk/1.0.9.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "build/XNeuroSDK.targets",
+        "lib/net48/XNeuroSDK.dll",
+        "lib/net8.0-android34.0/XNeuroSDK.dll",
+        "lib/net8.0-android34.0/XNeuroSDK.pdb",
+        "lib/net8.0-android34.0/XNeuroSDK.xml",
+        "lib/net8.0-android34.0/neurosdk2.aar",
+        "lib/net8.0-ios13.0/XNeuroSDK.dll",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/manifest",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBit.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBit2.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBitBlack.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTCallibri.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTDeviceFactory.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTHeadband.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTHeadphones2.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTNeuroEEG.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTNeuroEEGSignalProcessing.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTScanner.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTSensor.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTTypes.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTUtils.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Headers/neurosdk.h",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Info.plist",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/Modules/module.modulemap",
+        "lib/net8.0-ios13.0/XNeuroSDK.resources/neurosdk2.framework/neurosdk2",
+        "lib/net8.0-maccatalyst14.0/XNeuroSDK.dll",
+        "lib/net8.0-maccatalyst14.0/XNeuroSDK.resources.zip",
+        "lib/net8.0-windows10.0.19041.0/XNeuroSDK.dll",
+        "lib/net8.0/XNeuroSDK.dll",
+        "lib/net9.0-android35.0/XNeuroSDK.dll",
+        "lib/net9.0-android35.0/XNeuroSDK.pdb",
+        "lib/net9.0-android35.0/XNeuroSDK.xml",
+        "lib/net9.0-android35.0/neurosdk2.aar",
+        "lib/net9.0-ios15.0/XNeuroSDK.dll",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/manifest",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBit.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBit2.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTBrainBitBlack.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTCallibri.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTDeviceFactory.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTHeadband.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTHeadphones2.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTNeuroEEG.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTNeuroEEGSignalProcessing.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTScanner.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTSensor.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTTypes.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/NTUtils.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Headers/neurosdk.h",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Info.plist",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/Modules/module.modulemap",
+        "lib/net9.0-ios15.0/XNeuroSDK.resources/neurosdk2.framework/neurosdk2",
+        "lib/net9.0-maccatalyst15.0/XNeuroSDK.dll",
+        "lib/net9.0-maccatalyst15.0/XNeuroSDK.resources.zip",
+        "lib/net9.0-windows10.0.19041.0/XNeuroSDK.dll",
+        "lib/net9.0/XNeuroSDK.dll",
+        "lib/netstandard2.0/XNeuroSDK.dll",
+        "runtimes/win-x64/native/neurosdk2-x64.dll",
+        "runtimes/win-x86/native/neurosdk2-x32.dll",
+        "xneurosdk.1.0.9.4.nupkg.sha512",
+        "xneurosdk.nuspec"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0-windows7.0": []
+    "net10.0-windows7.0": [
+      "EmStArtifacts >= 1.0.11",
+      "XNeuroSDK >= 1.0.9.4"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\Lenovo\\.nuget\\packages\\": {}
@@ -49,6 +244,16 @@
     "frameworks": {
       "net10.0-windows7.0": {
         "targetAlias": "net10.0-windows",
+        "dependencies": {
+          "EmStArtifacts": {
+            "target": "Package",
+            "version": "[1.0.11, )"
+          },
+          "XNeuroSDK": {
+            "target": "Package",
+            "version": "[1.0.9.4, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

@@ -87,3 +87,13 @@ D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Component
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\EmStArtifacts.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\XNeuroSDK.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\em_st_artifacts-x64.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\em_st_artifacts-x86.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\neurosdk2-x64.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\neurosdk2-x32.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.AssemblyReference.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryB.635BC927.Up2Date

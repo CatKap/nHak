@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ppZG0p2mzBY=",
+  "dgSpecHash": "33bdq0VAzQc=",
   "success": true,
   "projectFilePath": "D:\\Work\\Codes\\hackathons\\nHak\\ScenaryBuilder\\ScenaryBuilder.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\Lenovo\\.nuget\\packages\\emstartifacts\\1.0.11\\emstartifacts.1.0.11.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\xneurosdk\\1.0.9.4\\xneurosdk.1.0.9.4.nupkg.sha512"
+  ],
   "logs": []
 }

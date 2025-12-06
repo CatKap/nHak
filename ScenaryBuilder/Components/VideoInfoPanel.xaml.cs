@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using System.Windows.Input;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Threading;
 
 namespace EmotionAnalyzer.Components
 {
@@ -26,6 +27,11 @@ namespace EmotionAnalyzer.Components
         private List<UserAction> _userActions = new List<UserAction>();
         private DateTime _sessionStartTime;
         private bool _isCollectingStats = true;
+        
+        // Для BrainBit анализа
+        private BrainBitManager? _brainBitManager;
+        private List<BrainBitManager.AnalysisData> _brainBitData = new List<BrainBitManager.AnalysisData>();
+        private bool _isBrainBitAnalyzing = false;
         
         // Класс для хранения действий пользователя
         public class UserAction
@@ -50,6 +56,11 @@ namespace EmotionAnalyzer.Components
             
             // Начинаем сбор статистики
             StartStatisticsCollection();
+            
+            // Инициализируем BrainBitManager
+            _brainBitManager = new BrainBitManager();
+            _brainBitManager.AnalysisDataReceived += OnBrainBitDataReceived;
+            _brainBitManager.AnalysisStateChanged += OnBrainBitStateChanged;
         }
         
         private void StartStatisticsCollection()
@@ -75,9 +86,6 @@ namespace EmotionAnalyzer.Components
             
             _userActions.Add(action);
             Console.WriteLine($"Действие записано: {action}");
-            
-            // Обновляем UI статистики если открыто окно
-            UpdateStatisticsUI();
         }
         
         private void InitializeVideoPlayer()
@@ -120,18 +128,6 @@ namespace EmotionAnalyzer.Components
                 _mediaPlayer.MediaOpened += OnMediaOpened;
                 _mediaPlayer.MediaEnded += OnMediaEnded;
                 _mediaPlayer.MediaFailed += OnMediaFailed;
-                
-                // Подписываемся на события перемотки
-                _mediaPlayer.MouseDown += OnMediaPlayerMouseDown;
-            }
-        }
-
-        private void OnMediaPlayerMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_mediaPlayer != null && e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
-            {
-                // Двойной клик по видео - перемотка вперед
-                LogAction("double_click_forward", _mediaPlayer.Position, "Двойной клик");
             }
         }
 
@@ -189,6 +185,7 @@ namespace EmotionAnalyzer.Components
         {
             _sessionStartTime = DateTime.Now;
             _userActions.Clear();
+            _brainBitData.Clear();
             LogAction("new_video_load", TimeSpan.Zero, "Загрузка нового видео");
         }
 
@@ -451,71 +448,169 @@ namespace EmotionAnalyzer.Components
             UpdatePlayPauseButton();
         }
 
-        private void OnStatisticsClicked(object sender, RoutedEventArgs e)
+        private async void OnStatisticsClicked(object sender, RoutedEventArgs e)
         {
-            ShowStatisticsWindow();
-        }
-
-        private void ShowStatisticsWindow()
-        {
-            var statsWindow = new Window
+            // 1. Перематываем видео в начало
+            if (_mediaPlayer != null)
             {
-                Title = "Статистика по действиям пользователя",
-                Width = 600,
-                Height = 500,
+                _mediaPlayer.Position = TimeSpan.Zero;
+                if (_isPlaying)
+                {
+                    _mediaPlayer.Pause();
+                    _isPlaying = false;
+                    UpdatePlayPauseButton();
+                }
+                UpdateVideoTimestamp();
+            }
+            
+            // 2. Запускаем анализ BrainBit
+            if (_mediaPlayer?.NaturalDuration.HasTimeSpan == true && _brainBitManager != null)
+            {
+                try
+                {
+                    var videoDuration = _mediaPlayer.NaturalDuration.TimeSpan;
+                    
+                    // Очищаем предыдущие данные
+                    _brainBitData.Clear();
+                    
+                    // Показываем окно ожидания
+                    var waitWindow = new Window
+                    {
+                        Title = "Подготовка анализа",
+                        Width = 300,
+                        Height = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Owner = Window.GetWindow(this)
+                    };
+                    
+                    var stackPanel = new StackPanel
+                    {
+                        Margin = new Thickness(20),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    
+                    var progressBar = new ProgressBar
+                    {
+                        IsIndeterminate = true,
+                        Width = 200,
+                        Height = 20,
+                        Margin = new Thickness(0, 0, 0, 10)
+                    };
+                    
+                    var textBlock = new TextBlock
+                    {
+                        Text = "Подготовка нейроинтерфейса...\nЭто может занять до 30 секунд",
+                        TextAlignment = TextAlignment.Center
+                    };
+                    
+                    stackPanel.Children.Add(progressBar);
+                    stackPanel.Children.Add(textBlock);
+                    waitWindow.Content = stackPanel;
+                    
+                    // Запускаем окно в фоновом режиме
+                    waitWindow.Show();
+                    
+                    // Запускаем анализ
+                    bool analysisStarted = await _brainBitManager.StartAnalysis(videoDuration);
+                    
+                    // Закрываем окно ожидания
+                    waitWindow.Close();
+                    
+                    if (analysisStarted)
+                    {
+                        MessageBox.Show("Анализ начался. Пожалуйста, носите нейрогарнитуру во время просмотра видео.\nНажмите 'Стоп' в окне анализа для завершения.", 
+                                      "Анализ запущен", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Information);
+                        
+                        // Показываем окно анализа в реальном времени
+                        ShowRealTimeAnalysisWindow(videoDuration);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Не удалось запустить анализ. Проверьте подключение нейрогарнитуры.", 
+                                      "Ошибка", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка запуска анализа: {ex.Message}", 
+                                  "Ошибка", 
+                                  MessageBoxButton.OK, 
+                                  MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Видео не загружено или не удалось определить длительность", 
+                              "Ошибка", 
+                              MessageBoxButton.OK, 
+                              MessageBoxImage.Warning);
+            }
+        }
+        
+        private void ShowRealTimeAnalysisWindow(TimeSpan videoDuration)
+        {
+            var analysisWindow = new Window
+            {
+                Title = "Анализ эмоционального состояния",
+                Width = 800,
+                Height = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Window.GetWindow(this)
             };
-
+            
             var grid = new Grid();
             
-            // Кнопки управления
-            var buttonPanel = new StackPanel
+            // Панель управления
+            var controlPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 10, 0, 10)
             };
             
-            var copyButton = new Button
+            var stopButton = new Button
             {
-                Content = "Копировать для нейронки",
+                Content = "⏹ Стоп анализ",
+                Margin = new Thickness(5),
+                Padding = new Thickness(10, 5, 10, 5),
+                Background = Brushes.Red,
+                Foreground = Brushes.White
+            };
+            
+            var saveButton = new Button
+            {
+                Content = "💾 Сохранить данные",
                 Margin = new Thickness(5),
                 Padding = new Thickness(10, 5, 10, 5)
             };
             
             var exportButton = new Button
             {
-                Content = "Экспорт в файл",
+                Content = "📤 Экспорт для нейронки",
                 Margin = new Thickness(5),
                 Padding = new Thickness(10, 5, 10, 5)
             };
             
-            var clearButton = new Button
+            stopButton.Click += (s, e) =>
             {
-                Content = "Очистить статистику",
-                Margin = new Thickness(5),
-                Padding = new Thickness(10, 5, 10, 5)
+                _brainBitManager?.StopAnalysis();
+                analysisWindow.Close();
+                ShowFinalStatisticsWindow();
             };
             
-            copyButton.Click += (s, e) => CopyStatisticsToClipboard();
-            exportButton.Click += (s, e) => ExportStatisticsToFile();
-            clearButton.Click += (s, e) => 
-            {
-                if (MessageBox.Show("Очистить всю статистику?", "Подтверждение",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                {
-                    _userActions.Clear();
-                    StartStatisticsCollection();
-                    UpdateStatisticsUI();
-                }
-            };
+            saveButton.Click += (s, e) => SaveBrainBitData();
+            exportButton.Click += (s, e) => ExportBrainBitData();
             
-            buttonPanel.Children.Add(copyButton);
-            buttonPanel.Children.Add(exportButton);
-            buttonPanel.Children.Add(clearButton);
+            controlPanel.Children.Add(stopButton);
+            controlPanel.Children.Add(saveButton);
+            controlPanel.Children.Add(exportButton);
             
-            // Текстовое поле для отображения статистики
+            // Поле для вывода данных в реальном времени
             var textBox = new TextBox
             {
                 Margin = new Thickness(10),
@@ -527,54 +622,266 @@ namespace EmotionAnalyzer.Components
                 TextWrapping = TextWrapping.NoWrap
             };
             
-            // Обновляем текст статистики
-            UpdateStatisticsTextBox(textBox);
+            // Таймер для обновления данных в реальном времени
+            var updateTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            
+            updateTimer.Tick += (s, e) => UpdateRealTimeAnalysisTextBox(textBox);
+            updateTimer.Start();
+            
+            // При закрытии окна останавливаем анализ
+            analysisWindow.Closed += (s, e) =>
+            {
+                updateTimer.Stop();
+                _brainBitManager?.StopAnalysis();
+            };
             
             // Разметка
-            var row1 = new RowDefinition { Height = GridLength.Auto };
-            var row2 = new RowDefinition { Height = new GridLength(1, GridUnitType.Star) };
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             
-            grid.RowDefinitions.Add(row1);
-            grid.RowDefinitions.Add(row2);
-            
-            Grid.SetRow(buttonPanel, 0);
+            Grid.SetRow(controlPanel, 0);
             Grid.SetRow(textBox, 1);
             
-            grid.Children.Add(buttonPanel);
+            grid.Children.Add(controlPanel);
             grid.Children.Add(textBox);
             
-            statsWindow.Content = grid;
-            statsWindow.ShowDialog();
+            analysisWindow.Content = grid;
+            analysisWindow.Show();
         }
         
-        private void UpdateStatisticsUI()
+        private void UpdateRealTimeAnalysisTextBox(TextBox textBox)
         {
-            // Метод для обновления UI статистики если нужно
-            // Можно оставить пустым или добавить обновление счетчика в UI
-        }
-        
-        private void UpdateStatisticsTextBox(TextBox textBox)
-        {
-            if (_userActions.Count == 0)
+            if (_brainBitData.Count == 0)
             {
-                textBox.Text = "Статистика действий отсутствует.\nНачните просмотр видео для сбора данных.";
+                textBox.Text = "Ожидание данных от нейрогарнитуры...\nПожалуйста, подождите 20-30 секунд для калибровки.";
                 return;
             }
             
             var sb = new StringBuilder();
-            sb.AppendLine($"=== СТАТИСТИКА ПОЛЬЗОВАТЕЛЬСКИХ ДЕЙСТВИЙ ===\n");
+            sb.AppendLine($"=== ДАННЫЕ АНАЛИЗА В РЕАЛЬНОМ ВРЕМЕНИ ===\n");
+            sb.AppendLine($"Всего получено измерений: {_brainBitData.Count}");
+            sb.AppendLine($"Последнее обновление: {DateTime.Now:HH:mm:ss}\n");
+            
+            // Последние 5 измерений
+            var recentData = _brainBitData.TakeLast(5).ToList();
+            
+            for (int i = 0; i < recentData.Count; i++)
+            {
+                var data = recentData[i];
+                sb.AppendLine($"Измерение #{_brainBitData.Count - recentData.Count + i + 1}:");
+                sb.AppendLine($"  Время видео: {data.VideoTime:mm\\:ss}");
+                sb.AppendLine($"  Внимание: {data.InstAttention:F2} (относительное: {data.RelAttention:F2})");
+                sb.AppendLine($"  Расслабление: {data.InstRelaxation:F2} (относительное: {data.RelRelaxation:F2})");
+                sb.AppendLine($"  Спектральные волны:");
+                sb.AppendLine($"    Альфа (α): {data.Alpha:F2}%");
+                sb.AppendLine($"    Бета (β): {data.Beta:F2}%");
+                sb.AppendLine($"    Гамма (γ): {data.Gamma:F2}%");
+                sb.AppendLine($"    Тета (θ): {data.Theta:F2}%");
+                sb.AppendLine($"    Дельта (δ): {data.Delta:F2}%");
+                sb.AppendLine();
+            }
+            
+            // Средние значения
+            if (_brainBitData.Count >= 3)
+            {
+                sb.AppendLine("=== СРЕДНИЕ ЗНАЧЕНИЯ ===\n");
+                sb.AppendLine($"Среднее внимание: {_brainBitData.Average(d => d.InstAttention):F2}");
+                sb.AppendLine($"Среднее расслабление: {_brainBitData.Average(d => d.InstRelaxation):F2}");
+                sb.AppendLine($"Максимальное внимание: {_brainBitData.Max(d => d.InstAttention):F2}");
+                sb.AppendLine($"Минимальное внимание: {_brainBitData.Min(d => d.InstAttention):F2}");
+            }
+            
+            textBox.Text = sb.ToString();
+        }
+        
+        private void ShowFinalStatisticsWindow()
+        {
+            var statsWindow = new Window
+            {
+                Title = "Результаты анализа эмоций",
+                Width = 700,
+                Height = 500,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this)
+            };
+            
+            var tabControl = new TabControl();
+            
+            // Вкладка 1: Данные BrainBit
+            var brainBitTab = new TabItem
+            {
+                Header = "📊 Данные нейроинтерфейса"
+            };
+            
+            var brainBitTextBox = new TextBox
+            {
+                Margin = new Thickness(10),
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                IsReadOnly = true,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                TextWrapping = TextWrapping.NoWrap
+            };
+            
+            UpdateBrainBitStatisticsTextBox(brainBitTextBox);
+            brainBitTab.Content = brainBitTextBox;
+            
+            // Вкладка 2: Действия пользователя
+            var actionsTab = new TabItem
+            {
+                Header = "🎬 Действия пользователя"
+            };
+            
+            var actionsTextBox = new TextBox
+            {
+                Margin = new Thickness(10),
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 12,
+                IsReadOnly = true,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                TextWrapping = TextWrapping.NoWrap
+            };
+            
+            UpdateUserActionsTextBox(actionsTextBox);
+            actionsTab.Content = actionsTextBox;
+            
+            // Вкладка 3: Комбинированные данные для нейронки
+            var combinedTab = new TabItem
+            {
+                Header = "🧠 Данные для нейронной сети"
+            };
+            
+            var combinedTextBox = new TextBox
+            {
+                Margin = new Thickness(10),
+                FontFamily = new FontFamily("Consolas"),
+                FontSize = 11,
+                IsReadOnly = true,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                TextWrapping = TextWrapping.NoWrap
+            };
+            
+            combinedTextBox.Text = GetCombinedDataForNeuralNetwork();
+            combinedTab.Content = combinedTextBox;
+            
+            // Панель кнопок
+            var buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+            
+            var copyButton = new Button
+            {
+                Content = "📋 Копировать данные",
+                Margin = new Thickness(5),
+                Padding = new Thickness(10, 5, 10, 5)
+            };
+            
+            var exportButton = new Button
+            {
+                Content = "💾 Экспорт в JSON",
+                Margin = new Thickness(5),
+                Padding = new Thickness(10, 5, 10, 5)
+            };
+            
+            copyButton.Click += (s, e) => Clipboard.SetText(GetCombinedDataForNeuralNetwork());
+            exportButton.Click += (s, e) => ExportCombinedData();
+            
+            buttonPanel.Children.Add(copyButton);
+            buttonPanel.Children.Add(exportButton);
+            
+            // Основной layout
+            var mainGrid = new Grid();
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            
+            tabControl.Items.Add(brainBitTab);
+            tabControl.Items.Add(actionsTab);
+            tabControl.Items.Add(combinedTab);
+            
+            Grid.SetRow(tabControl, 0);
+            Grid.SetRow(buttonPanel, 1);
+            
+            mainGrid.Children.Add(tabControl);
+            mainGrid.Children.Add(buttonPanel);
+            
+            statsWindow.Content = mainGrid;
+            statsWindow.ShowDialog();
+        }
+        
+        private void UpdateBrainBitStatisticsTextBox(TextBox textBox)
+        {
+            if (_brainBitData.Count == 0)
+            {
+                textBox.Text = "Данные нейроинтерфейса не собраны.\nЗапустите анализ для сбора данных.";
+                return;
+            }
+            
+            var sb = new StringBuilder();
+            sb.AppendLine($"=== ДАННЫЕ НЕЙРОИНТЕРФЕЙСА BRAINBIT ===\n");
+            sb.AppendLine($"Всего измерений: {_brainBitData.Count}");
+            sb.AppendLine($"Длительность анализа: {_brainBitData.Last().VideoTime:mm\\:ss}");
+            sb.AppendLine($"Диапазон времени: {_brainBitData.First().Timestamp:HH:mm:ss} - {_brainBitData.Last().Timestamp:HH:mm:ss}\n");
+            
+            // Статистика по вниманию и расслаблению
+            sb.AppendLine("=== ЭМОЦИОНАЛЬНЫЕ ПОКАЗАТЕЛИ ===\n");
+            sb.AppendLine($"Среднее внимание: {_brainBitData.Average(d => d.InstAttention):F2}");
+            sb.AppendLine($"Среднее расслабление: {_brainBitData.Average(d => d.InstRelaxation):F2}");
+            sb.AppendLine($"Максимальное внимание: {_brainBitData.Max(d => d.InstAttention):F2}");
+            sb.AppendLine($"Минимальное внимание: {_brainBitData.Min(d => d.InstAttention):F2}");
+            sb.AppendLine($"Максимальное расслабление: {_brainBitData.Max(d => d.InstRelaxation):F2}");
+            sb.AppendLine($"Минимальное расслабление: {_brainBitData.Min(d => d.InstRelaxation):F2}\n");
+            
+            // Спектральные волны
+            sb.AppendLine("=== СПЕКТРАЛЬНЫЕ ВОЛНЫ (средние значения) ===\n");
+            sb.AppendLine($"Альфа (α): {_brainBitData.Average(d => d.Alpha):F2}% - Расслабление, медитация");
+            sb.AppendLine($"Бета (β): {_brainBitData.Average(d => d.Beta):F2}% - Активное мышление, концентрация");
+            sb.AppendLine($"Гамма (γ): {_brainBitData.Average(d => d.Gamma):F2}% - Высшая когнитивная деятельность");
+            sb.AppendLine($"Тета (θ): {_brainBitData.Average(d => d.Theta):F2}% - Творчество, сновидения");
+            sb.AppendLine($"Дельта (δ): {_brainBitData.Average(d => d.Delta):F2}% - Глубокий сон, восстановление\n");
+            
+            // Последние 10 измерений
+            sb.AppendLine("=== ПОСЛЕДНИЕ ИЗМЕРЕНИЯ ===\n");
+            var recentData = _brainBitData.TakeLast(10).ToList();
+            
+            for (int i = 0; i < recentData.Count; i++)
+            {
+                var data = recentData[i];
+                sb.AppendLine($"{i + 1:00}. [{data.VideoTime:mm\\:ss}] Вн: {data.InstAttention:F2} | Рассл: {data.InstRelaxation:F2} | " +
+                            $"α:{data.Alpha:F1}% β:{data.Beta:F1}%");
+            }
+            
+            textBox.Text = sb.ToString();
+        }
+        
+        private void UpdateUserActionsTextBox(TextBox textBox)
+        {
+            if (_userActions.Count == 0)
+            {
+                textBox.Text = "Действия пользователя не записаны.";
+                return;
+            }
+            
+            var sb = new StringBuilder();
+            sb.AppendLine($"=== ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ ===\n");
             sb.AppendLine($"Видео: {Path.GetFileName(_currentVideoPath) ?? "Не загружено"}");
             sb.AppendLine($"Начало сессии: {_sessionStartTime:dd.MM.yyyy HH:mm:ss}");
-            sb.AppendLine($"Длительность сессии: {(DateTime.Now - _sessionStartTime):hh\\:mm\\:ss}");
             sb.AppendLine($"Всего действий: {_userActions.Count}\n");
             
-            sb.AppendLine("=== ПОДРОБНАЯ СТАТИСТИКА ===\n");
-            
+            // Группировка по типам действий
             var actionGroups = _userActions.GroupBy(a => a.ActionType)
                                           .Select(g => new { Type = g.Key, Count = g.Count() })
                                           .OrderByDescending(g => g.Count);
             
-            sb.AppendLine("Сводка по типам действий:");
+            sb.AppendLine("=== СТАТИСТИКА ПО ТИПАМ ДЕЙСТВИЙ ===\n");
             foreach (var group in actionGroups)
             {
                 sb.AppendLine($"  {group.Type}: {group.Count} раз");
@@ -586,52 +893,87 @@ namespace EmotionAnalyzer.Components
             foreach (var action in _userActions)
             {
                 sb.AppendLine($"{index:000}. {action}");
-                if (action.AdditionalData != null)
-                {
-                    sb.AppendLine($"     Данные: {action.AdditionalData}");
-                }
                 index++;
             }
-            
-            sb.AppendLine("\n=== ДАННЫЕ ДЛЯ НЕЙРОННОЙ СЕТИ ===\n");
-            sb.AppendLine(GetNeuralNetworkFormat());
             
             textBox.Text = sb.ToString();
         }
         
-        private void CopyStatisticsToClipboard()
+        private string GetCombinedDataForNeuralNetwork()
         {
-            try
+            var sb = new StringBuilder();
+            sb.AppendLine("{");
+            sb.AppendLine("  \"emotion_analysis_session\": {");
+            sb.AppendLine($"    \"video\": \"{JsonEscape(Path.GetFileName(_currentVideoPath))}\",");
+            sb.AppendLine($"    \"session_start\": \"{_sessionStartTime:yyyy-MM-ddTHH:mm:ss}\",");
+            sb.AppendLine($"    \"user_actions_count\": {_userActions.Count},");
+            sb.AppendLine($"    \"brainbit_samples_count\": {_brainBitData.Count},");
+            
+            // Данные действий пользователя
+            sb.AppendLine("    \"user_actions\": [");
+            for (int i = 0; i < _userActions.Count; i++)
             {
-                string neuralData = GetNeuralNetworkFormat();
-                Clipboard.SetText(neuralData);
-                MessageBox.Show("Данные скопированы в буфер обмена в формате для нейронной сети!", 
-                              "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                var action = _userActions[i];
+                sb.Append("      {");
+                sb.Append($"\"time\": \"{action.Timestamp:HH:mm:ss}\", ");
+                sb.Append($"\"type\": \"{JsonEscape(action.ActionType)}\", ");
+                sb.Append($"\"video_pos\": {(int)action.VideoPosition.TotalSeconds}");
+                if (action.AdditionalData != null)
+                {
+                    sb.Append($", \"data\": \"{JsonEscape(action.AdditionalData.ToString())}\"");
+                }
+                sb.Append("}");
+                if (i < _userActions.Count - 1) sb.Append(",");
+                sb.AppendLine();
             }
-            catch (Exception ex)
+            sb.AppendLine("    ],");
+            
+            // Данные BrainBit
+            sb.AppendLine("    \"brainbit_data\": [");
+            for (int i = 0; i < _brainBitData.Count; i++)
             {
-                MessageBox.Show($"Ошибка при копировании: {ex.Message}", 
-                              "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                var data = _brainBitData[i];
+                sb.Append("      {");
+                sb.Append($"\"timestamp\": \"{data.Timestamp:HH:mm:ss}\", ");
+                sb.Append($"\"video_time\": {(int)data.VideoTime.TotalSeconds}, ");
+                sb.Append($"\"attention\": {data.InstAttention:F2}, ");
+                sb.Append($"\"relaxation\": {data.InstRelaxation:F2}, ");
+                sb.Append($"\"rel_attention\": {data.RelAttention:F2}, ");
+                sb.Append($"\"rel_relaxation\": {data.RelRelaxation:F2}, ");
+                sb.Append($"\"alpha\": {data.Alpha:F2}, ");
+                sb.Append($"\"beta\": {data.Beta:F2}, ");
+                sb.Append($"\"gamma\": {data.Gamma:F2}, ");
+                sb.Append($"\"theta\": {data.Theta:F2}, ");
+                sb.Append($"\"delta\": {data.Delta:F2}");
+                sb.Append("}");
+                if (i < _brainBitData.Count - 1) sb.Append(",");
+                sb.AppendLine();
             }
+            sb.AppendLine("    ]");
+            
+            sb.AppendLine("  }");
+            sb.AppendLine("}");
+            
+            return sb.ToString();
         }
         
-        private void ExportStatisticsToFile()
+        private void ExportCombinedData()
         {
             try
             {
                 var saveDialog = new SaveFileDialog
                 {
-                    Filter = "JSON файлы (*.json)|*.json|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*",
-                    FileName = $"user_stats_{DateTime.Now:yyyyMMdd_HHmmss}",
-                    Title = "Экспорт статистики"
+                    Filter = "JSON файлы (*.json)|*.json|Текстовые файлы (*.txt)|*.txt",
+                    FileName = $"emotion_analysis_{DateTime.Now:yyyyMMdd_HHmmss}",
+                    Title = "Экспорт данных анализа"
                 };
                 
                 if (saveDialog.ShowDialog() == true)
                 {
-                    string fullData = GetStatisticsAsJson();
-                    File.WriteAllText(saveDialog.FileName, fullData);
+                    string jsonData = GetCombinedDataForNeuralNetwork();
+                    File.WriteAllText(saveDialog.FileName, jsonData);
                     
-                    MessageBox.Show($"Статистика экспортирована в файл: {saveDialog.FileName}", 
+                    MessageBox.Show($"Данные экспортированы в файл: {saveDialog.FileName}", 
                                   "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
@@ -642,55 +984,74 @@ namespace EmotionAnalyzer.Components
             }
         }
         
-        private string GetNeuralNetworkFormat()
+        private void SaveBrainBitData()
         {
-            var sb = new StringBuilder();
-            
-            // Формат для нейронной сети
-            sb.AppendLine("{");
-            sb.AppendLine("  \"user_session\": {");
-            sb.AppendLine($"    \"video\": \"{JsonEscape(Path.GetFileName(_currentVideoPath))}\",");
-            sb.AppendLine($"    \"session_start\": \"{_sessionStartTime:yyyy-MM-ddTHH:mm:ss}\",");
-            sb.AppendLine($"    \"total_actions\": {_userActions.Count},");
-            
-            // Группируем действия по типам
-            var actionsByType = _userActions.GroupBy(a => a.ActionType)
-                                           .ToDictionary(g => g.Key, g => g.Select(a => new
-                                           {
-                                               timestamp = a.Timestamp.ToString("HH:mm:ss"),
-                                               position = $"{(int)a.VideoPosition.TotalSeconds}s",
-                                               data = a.AdditionalData?.ToString()
-                                           }).ToList());
-            
-            sb.AppendLine("    \"actions\": {");
-            
-            bool firstActionType = true;
-            foreach (var kvp in actionsByType)
+            try
             {
-                if (!firstActionType) sb.AppendLine(",");
-                sb.AppendLine($"      \"{JsonEscape(kvp.Key)}\": [");
-                
-                bool firstAction = true;
-                foreach (var action in kvp.Value)
+                var saveDialog = new SaveFileDialog
                 {
-                    if (!firstAction) sb.AppendLine(",");
-                    sb.Append($"        {{\"time\": \"{action.timestamp}\", \"pos\": \"{action.position}\"");
-                    if (action.data != null)
+                    Filter = "CSV файлы (*.csv)|*.csv|Текстовые файлы (*.txt)|*.txt",
+                    FileName = $"brainbit_data_{DateTime.Now:yyyyMMdd_HHmmss}",
+                    Title = "Сохранение данных BrainBit"
+                };
+                
+                if (saveDialog.ShowDialog() == true)
+                {
+                    var sb = new StringBuilder();
+                    // Заголовок CSV
+                    sb.AppendLine("Timestamp,VideoTime,Attention,Relaxation,RelAttention,RelRelaxation,Alpha,Beta,Gamma,Theta,Delta");
+                    
+                    foreach (var data in _brainBitData)
                     {
-                        sb.Append($", \"data\": \"{JsonEscape(action.data)}\"");
+                        sb.AppendLine($"{data.Timestamp:HH:mm:ss},{(int)data.VideoTime.TotalSeconds},{data.InstAttention:F2},{data.InstRelaxation:F2},{data.RelAttention:F2},{data.RelRelaxation:F2},{data.Alpha:F2},{data.Beta:F2},{data.Gamma:F2},{data.Theta:F2},{data.Delta:F2}");
                     }
-                    sb.Append("}");
-                    firstAction = false;
+                    
+                    File.WriteAllText(saveDialog.FileName, sb.ToString());
+                    
+                    MessageBox.Show($"Данные сохранены в файл: {saveDialog.FileName}", 
+                                  "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                sb.Append("\n      ]");
-                firstActionType = false;
             }
-            
-            sb.AppendLine("\n    }");
-            sb.AppendLine("  }");
-            sb.AppendLine("}");
-            
-            return sb.ToString();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении: {ex.Message}", 
+                              "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private void ExportBrainBitData()
+        {
+            try
+            {
+                string jsonData = JsonSerializer.Serialize(_brainBitData, new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                });
+                
+                Clipboard.SetText(jsonData);
+                MessageBox.Show("Данные BrainBit скопированы в буфер обмена в формате JSON!", 
+                              "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при экспорте: {ex.Message}", 
+                              "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        // Обработчики событий BrainBit
+        private void OnBrainBitDataReceived(BrainBitManager.AnalysisData data)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _brainBitData.Add(data);
+            });
+        }
+        
+        private void OnBrainBitStateChanged(bool isAnalyzing)
+        {
+            _isBrainBitAnalyzing = isAnalyzing;
         }
         
         private string JsonEscape(string? input)
@@ -701,40 +1062,9 @@ namespace EmotionAnalyzer.Components
                        .Replace("\"", "\\\"")
                        .Replace("\n", "\\n")
                        .Replace("\r", "\\r")
-                       .Replace("\t", "\\t")
-                       .Replace("\b", "\\b")
-                       .Replace("\f", "\\f");
+                       .Replace("\t", "\\t");
         }
         
-        private string GetStatisticsAsJson()
-        {
-            var data = new
-            {
-                session = new
-                {
-                    video = Path.GetFileName(_currentVideoPath),
-                    session_start = _sessionStartTime.ToString("yyyy-MM-ddTHH:mm:ss"),
-                    total_actions = _userActions.Count,
-                    actions = _userActions.Select(a => new
-                    {
-                        timestamp = a.Timestamp.ToString("yyyy-MM-ddTHH:mm:ss"),
-                        action_type = a.ActionType,
-                        video_position = a.VideoPosition.TotalSeconds,
-                        additional_data = a.AdditionalData?.ToString()
-                    }).ToList()
-                }
-            };
-            
-            // Используем System.Text.Json
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-            
-            return JsonSerializer.Serialize(data, options);
-        }
-
         private void OnUploadVideoClicked(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog
@@ -823,6 +1153,10 @@ namespace EmotionAnalyzer.Components
             StopVideo();
             _progressTimer?.Stop();
             
+            // Останавливаем BrainBit анализ
+            _brainBitManager?.StopAnalysis();
+            _brainBitManager?.Dispose();
+            
             if (_mediaPlayer != null)
             {
                 _mediaPlayer.Source = null;
@@ -835,32 +1169,32 @@ namespace EmotionAnalyzer.Components
                 _fullscreenWindow = null;
             }
             
-            // Экспортируем статистику перед закрытием
-            AutoExportStatistics();
+            // Автосохранение данных
+            AutoSaveAnalysisData();
         }
         
-        private void AutoExportStatistics()
+        private void AutoSaveAnalysisData()
         {
-            if (_userActions.Count > 0)
+            if (_brainBitData.Count > 0 || _userActions.Count > 0)
             {
                 try
                 {
                     string autoSavePath = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                         "EmotionAnalyzer",
-                        "Statistics",
+                        "Analysis",
                         $"auto_save_{DateTime.Now:yyyyMMdd_HHmmss}.json"
                     );
                     
                     Directory.CreateDirectory(Path.GetDirectoryName(autoSavePath)!);
-                    string jsonData = GetStatisticsAsJson();
+                    string jsonData = GetCombinedDataForNeuralNetwork();
                     File.WriteAllText(autoSavePath, jsonData);
                     
-                    Console.WriteLine($"Статистика автоматически сохранена: {autoSavePath}");
+                    Console.WriteLine($"Данные анализа автоматически сохранены: {autoSavePath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка автосохранения статистики: {ex.Message}");
+                    Console.WriteLine($"Ошибка автосохранения данных: {ex.Message}");
                 }
             }
         }
@@ -875,43 +1209,33 @@ namespace EmotionAnalyzer.Components
             }
         }
         
-        // Методы для управления сбором статистики
-        public void PauseStatisticsCollection()
-        {
-            _isCollectingStats = false;
-            LogAction("stats_paused", _mediaPlayer?.Position ?? TimeSpan.Zero);
-        }
-        
-        public void ResumeStatisticsCollection()
-        {
-            _isCollectingStats = true;
-            LogAction("stats_resumed", _mediaPlayer?.Position ?? TimeSpan.Zero);
-        }
-        
-        public void ClearStatistics()
-        {
-            _userActions.Clear();
-            StartStatisticsCollection();
-        }
-        
+        // Методы для получения данных
         public List<UserAction> GetUserActions()
         {
             return new List<UserAction>(_userActions);
         }
         
-        public string GetStatisticsSummary()
+        public List<BrainBitManager.AnalysisData> GetBrainBitData()
         {
-            if (_userActions.Count == 0) return "Нет данных";
+            return new List<BrainBitManager.AnalysisData>(_brainBitData);
+        }
+        
+        public string GetAnalysisSummary()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"=== СВОДКА АНАЛИЗА ===\n");
+            sb.AppendLine($"Видео: {Path.GetFileName(_currentVideoPath)}");
+            sb.AppendLine($"Действия пользователя: {_userActions.Count}");
+            sb.AppendLine($"Измерения BrainBit: {_brainBitData.Count}");
             
-            var summary = $"Всего действий: {_userActions.Count}\n";
-            var groups = _userActions.GroupBy(a => a.ActionType);
-            
-            foreach (var group in groups)
+            if (_brainBitData.Count > 0)
             {
-                summary += $"{group.Key}: {group.Count()}\n";
+                sb.AppendLine($"\nСредние показатели:");
+                sb.AppendLine($"  Внимание: {_brainBitData.Average(d => d.InstAttention):F2}");
+                sb.AppendLine($"  Расслабление: {_brainBitData.Average(d => d.InstRelaxation):F2}");
             }
             
-            return summary;
+            return sb.ToString();
         }
     }
 }
