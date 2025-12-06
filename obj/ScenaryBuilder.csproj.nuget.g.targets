@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)xneurosdk\1.0.9.4\build\XNeuroSDK.targets" Condition="Exists('$(NuGetPackageRoot)xneurosdk\1.0.9.4\build\XNeuroSDK.targets')" />
+    <Import Project="$(NuGetPackageRoot)emstartifacts\1.0.11\build\EmStArtifacts.targets" Condition="Exists('$(NuGetPackageRoot)emstartifacts\1.0.11\build\EmStArtifacts.targets')" />
+  </ImportGroup>
+</Project>

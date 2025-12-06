@@ -1,0 +1,142 @@
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.exe
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.deps.json
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.cache
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.g.resources
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfoInputs.cache
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfo.cs
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.CoreCompileInputs.cache
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\refint\ScenaryBuilder.dll
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\Editor.baml
+C:\Users\maxim\RiderProjects\ScenaryBuilder\ScenaryBuilder\obj\Debug\net10.0-windows\Editor.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.exe
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.deps.json
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.pdb
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\App.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.g.resources
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.GeneratedMSBuildEditorConfig.editorconfig
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfoInputs.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfo.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.CoreCompileInputs.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.sourcelink.json
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\refint\ScenaryBuilder.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.exe
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.deps.json
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.cache
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.g.resources
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfoInputs.cache
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfo.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.CoreCompileInputs.cache
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.sourcelink.json
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\refint\ScenaryBuilder.dll
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.g.cs
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\EmStArtifacts.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\XNeuroSDK.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\em_st_artifacts-x64.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\em_st_artifacts-x86.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\neurosdk2-x64.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\neurosdk2-x32.dll
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.AssemblyReference.cache
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryB.635BC927.Up2Date
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.exe
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.deps.json
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\EmStArtifacts.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\LiveCharts.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\LiveCharts.Wpf.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\XNeuroSDK.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\em_st_artifacts-x64.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\em_st_artifacts-x86.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x64\native\neurosdk2-x64.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\bin\Debug\net10.0-windows\runtimes\win-x86\native\neurosdk2-x32.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.AssemblyReference.cache
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.cache
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.baml
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.g.resources
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfoInputs.cache
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.AssemblyInfo.cs
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.csproj.CoreCompileInputs.cache
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryB.635BC927.Up2Date
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\refint\ScenaryBuilder.dll
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
+C:\Users\maxim\Downloads\nHak-features-playbackwindow (1)\nHak-features-playbackwindow\ScenaryBuilder\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
