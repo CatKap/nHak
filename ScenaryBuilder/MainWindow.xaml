@@ -28,9 +28,24 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             
-            <!-- Левая панель - Помощник -->
-            <components:HelperPanel x:Name="HelperPanelComponent"
-                                    Grid.Column="0"/>
+            <!-- Левый столбец: HelperPanel + ActionButtonsPanel -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <!-- HelperPanel (аналитика) -->
+                <components:HelperPanel x:Name="HelperPanelComponent"
+                                        Grid.Row="0"/>
+                
+                <!-- Панель с кнопками -->
+                <components:FeedBackPanel x:Name="FeedBackPanelComponent"
+                                          Grid.Row="2"
+                                          OpenFullResultsClicked="FeedBackPanel_OpenFullResultsClicked"
+                                          OpenFeedbackClicked="FeedBackPanel_OpenFeedbackClicked"/>
+            </Grid>
             
             <!-- Центральная панель - Вовлечённость и ЭЭГ -->
             <Grid Grid.Column="2">
@@ -52,9 +67,17 @@
             <!-- Правая панель - Видео информация -->
             <components:VideoInfoPanel x:Name="VideoInfoPanelComponent"
                                        Grid.Column="4"/>
+            
+            <!-- Форма обратной связи (на весь левый столбец, скрыта) -->
+            <components:FeedbackForm x:Name="FeedbackFormComponent"
+                                     Grid.Column="0"
+                                     Grid.RowSpan="3"
+                                     Visibility="Collapsed"
+                                     FormSubmitted="FeedbackForm_FormSubmitted"
+                                     FormCancelled="FeedbackForm_FormCancelled"/>
         </Grid>
         
-        <!-- Панель управления окном - ВЫШЕ всего (Panel.ZIndex="100") -->
+        <!-- Панель управления окном -->
         <controls:WindowControlPanel x:Name="WindowControlsPanel"
                                      HorizontalAlignment="Right"
                                      VerticalAlignment="Top"
@@ -62,6 +85,5 @@
                                      Panel.ZIndex="100"
                                      MinimizeClick="MinimizeButton_Click"
                                      CloseClick="CloseButton_Click"/>
-
     </Grid>
 </Window>
