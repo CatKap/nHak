@@ -24,9 +24,7 @@ D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBu
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.dll
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.pdb
-D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Editor.baml
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.baml
-D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Editor.g.cs
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\MainWindow.g.cs
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\App.g.cs
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.cache
@@ -41,8 +39,6 @@ D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\refint\Sc
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
-D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.baml
-D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Playbackwindow.g.cs
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.exe
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.deps.json
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\bin\Debug\net10.0-windows\ScenaryBuilder.runtimeconfig.json
@@ -77,3 +73,17 @@ C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-win
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.g.cs
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.baml
 C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.baml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EEGPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\EngagementPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\HelpersPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\VideoInfoPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\WindowControlPanel.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml

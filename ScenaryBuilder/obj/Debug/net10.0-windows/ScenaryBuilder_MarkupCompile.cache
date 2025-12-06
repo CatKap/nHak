@@ -1,20 +1,20 @@
 ﻿ScenaryBuilder
-1.0.0.0
+
 
 winexe
 C#
 .cs
-c:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\
 ScenaryBuilder
 none
 false
 TRACE;DEBUG;NET;NET10_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-c:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\App.xaml
+D:\Work\Codes\hackathons\nHak\ScenaryBuilder\App.xaml
 7-558258989
 
-13452092946
+11-609309496
 205-764538886
 Components\EEGPanel.xaml;Components\EngagementPanel.xaml;Components\HelpersPanel.xaml;Components\StartupScreen.xaml;Components\VideoInfoPanel.xaml;Components\WindowControlPanel.xaml;MainWindow.xaml;
 
-True
+False
 

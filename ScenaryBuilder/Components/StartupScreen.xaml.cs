@@ -1,147 +1,236 @@
+using Microsoft.Win32;
 using System;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace EmotionAnalyzer.Components
 {
     public partial class StartupScreen : UserControl
     {
-        private DispatcherTimer? _loadingTimer; // Добавил nullable
-        private bool _isLoading = false;
-        private Random _random = new Random();
-
-        // События для уведомления о загрузке видео
-        public event EventHandler? VideoLoaded; // Добавил nullable
-        public event EventHandler? LoadingComplete; // Добавил nullable
-
+        // Событие загрузки видео
+        public event EventHandler? VideoLoaded;
+        
+        // Событие полного завершения загрузки и обработки
+        public event EventHandler? LoadingComplete;
+        
+        // Свойство для хранения пути к видео
+        public string VideoPath { get; private set; } = string.Empty;
+        
         public StartupScreen()
         {
             InitializeComponent();
-            InitializeLoadingTimer();
+            InitializeDropTarget();
         }
 
-        private void InitializeLoadingTimer()
+        private void InitializeDropTarget()
         {
-            _loadingTimer = new DispatcherTimer();
-            _loadingTimer.Interval = TimeSpan.FromMilliseconds(100);
-            _loadingTimer.Tick += LoadingTimer_Tick;
+            this.AllowDrop = true;
+            
+            this.DragEnter += OnDragEnter;
+            this.DragOver += OnDragOver;
+            this.DragLeave += OnDragLeave;
+            this.Drop += OnDrop;
         }
 
-        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        private void OnDragEnter(object sender, DragEventArgs e)
         {
-            StartVideoLoading();
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Window parentWindow = Window.GetWindow(this);
-            parentWindow?.Close();
-        }
-
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                parentWindow.WindowState = WindowState.Minimized;
+                this.Opacity = 0.8;
+                e.Effects = DragDropEffects.Copy;
             }
         }
 
-        public void StartVideoLoading()
+        private void OnDragOver(object sender, DragEventArgs e)
         {
-            if (_isLoading) return;
-
-            _isLoading = true;
-
-            // Переключаемся на экран загрузки
-            MainPanel.Visibility = Visibility.Collapsed;
-            LoadingPanel.Visibility = Visibility.Visible;
-
-            // Сбрасываем прогресс
-            LoadingProgressBar.Value = 0;
-            ProgressPercentageText.Text = "0%";
-            StatusTextBlock.Text = "Начинаем загрузку видео...";
-
-            // Запускаем таймер
-            _loadingTimer?.Start();
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+            e.Handled = true;
         }
 
-        private void LoadingTimer_Tick(object? sender, EventArgs e) // Добавил nullable для sender
+        private void OnDragLeave(object sender, DragEventArgs e)
         {
-            if (!_isLoading) return;
+            this.Opacity = 1.0;
+        }
 
-            // Увеличиваем прогресс
-            int increment = _random.Next(1, 5);
-            double newValue = LoadingProgressBar.Value + increment;
-
-            if (newValue >= 100)
+        private async void OnDrop(object sender, DragEventArgs e)
+        {
+            this.Opacity = 1.0;
+            
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // Загрузка завершена
-                LoadingProgressBar.Value = 100;
-                ProgressPercentageText.Text = "100%";
-                StatusTextBlock.Text = "Загрузка завершена! Обработка видео...";
-
-                // Ждем 2 секунды
-                _loadingTimer?.Stop();
-                Task.Delay(2000).ContinueWith(_ =>
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files.Length > 0)
                 {
-                    Dispatcher.Invoke(() =>
+                    var videoFile = files[0];
+                    if (IsSupportedVideoFormat(videoFile))
                     {
-                        // Вызываем события о завершении загрузки
-                        VideoLoaded?.Invoke(this, EventArgs.Empty);
-                        LoadingComplete?.Invoke(this, EventArgs.Empty);
-                        
-                        _isLoading = false;
-                    });
-                });
-            }
-            else
-            {
-                // Обновляем прогресс
-                LoadingProgressBar.Value = newValue;
-                ProgressPercentageText.Text = $"{(int)newValue}%";
-
-                // Обновляем статус
-                UpdateLoadingStatus(newValue);
+                        await ProcessVideoFile(videoFile);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Пожалуйста, выберите файл формата MP4 или MOV.", 
+                                      "Неверный формат", 
+                                      MessageBoxButton.OK, 
+                                      MessageBoxImage.Warning);
+                    }
+                }
             }
         }
 
-        private void UpdateLoadingStatus(double progress)
+        private async void LoadButton_Click(object sender, RoutedEventArgs e)
         {
-            if (progress < 20)
-                StatusTextBlock.Text = "Анализ видеофайла...";
-            else if (progress < 40)
-                StatusTextBlock.Text = "Чтение метаданных...";
-            else if (progress < 60)
-                StatusTextBlock.Text = "Загрузка видеопотока...";
-            else if (progress < 80)
-                StatusTextBlock.Text = "Извлечение аудиодорожки...";
-            else if (progress < 95)
-                StatusTextBlock.Text = "Финальная обработка...";
-            else
-                StatusTextBlock.Text = "Завершение загрузки...";
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Видео файлы (*.mp4;*.mov)|*.mp4;*.mov|Все файлы (*.*)|*.*",
+                Multiselect = false,
+                Title = "Выберите видео файл"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                await ProcessVideoFile(openFileDialog.FileName);
+            }
+        }
+
+        private bool IsSupportedVideoFormat(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToLower();
+            return extension == ".mp4" || extension == ".mov";
+        }
+
+        private async Task ProcessVideoFile(string filePath)
+        {
+            try
+            {
+                MainPanel.Visibility = Visibility.Collapsed;
+                LoadingPanel.Visibility = Visibility.Visible;
+                
+                LoadingProgressBar.Value = 0;
+                ProgressPercentageText.Text = "0%";
+                StatusTextBlock.Text = "Подготовка к загрузке...";
+
+                await SimulateVideoLoading(filePath);
+                
+                // Сохраняем путь к видео
+                VideoPath = filePath;
+                StatusTextBlock.Text = "Видео успешно загружено!";
+                await Task.Delay(500);
+                
+                // Генерируем событие загрузки видео
+                VideoLoaded?.Invoke(this, EventArgs.Empty);
+                
+                // Дополнительная обработка после загрузки видео
+                await ProcessAfterVideoLoaded();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке видео: {ex.Message}", 
+                              "Ошибка", 
+                              MessageBoxButton.OK, 
+                              MessageBoxImage.Error);
+                
+                MainPanel.Visibility = Visibility.Visible;
+                LoadingPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task SimulateVideoLoading(string filePath)
+        {
+            // Этап 1: Проверка файла
+            StatusTextBlock.Text = "Проверка файла...";
+            for (int i = 0; i <= 10; i++)
+            {
+                LoadingProgressBar.Value = i;
+                ProgressPercentageText.Text = $"{i}%";
+                await Task.Delay(30);
+            }
+
+            // Этап 2: Загрузка видео
+            StatusTextBlock.Text = "Загрузка видео...";
+            for (int i = 11; i <= 40; i++)
+            {
+                LoadingProgressBar.Value = i;
+                ProgressPercentageText.Text = $"{i}%";
+                await Task.Delay(40);
+            }
+
+            // Этап 3: Анализ метаданных
+            StatusTextBlock.Text = "Анализ метаданных...";
+            for (int i = 41; i <= 70; i++)
+            {
+                LoadingProgressBar.Value = i;
+                ProgressPercentageText.Text = $"{i}%";
+                await Task.Delay(30);
+            }
+
+            // Этап 4: Подготовка к воспроизведению
+            StatusTextBlock.Text = "Подготовка к воспроизведению...";
+            for (int i = 71; i <= 100; i++)
+            {
+                LoadingProgressBar.Value = i;
+                ProgressPercentageText.Text = $"{i}%";
+                await Task.Delay(20);
+            }
         }
         
-        // Метод для сброса экрана загрузки (если нужен возврат)
-        public void ResetLoadingScreen()
+        private async Task ProcessAfterVideoLoaded()
         {
-            _isLoading = false;
-            _loadingTimer?.Stop();
-            
+            try
+            {
+                // Имитация дополнительной обработки
+                StatusTextBlock.Text = "Выполнение анализа...";
+                LoadingProgressBar.Value = 0;
+                
+                for (int i = 0; i <= 100; i += 10)
+                {
+                    LoadingProgressBar.Value = i;
+                    ProgressPercentageText.Text = $"{i}%";
+                    await Task.Delay(100);
+                }
+                
+                StatusTextBlock.Text = "Анализ завершен!";
+                await Task.Delay(500);
+                
+                // Генерируем событие полного завершения
+                LoadingComplete?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при анализе: {ex.Message}", 
+                              "Ошибка", 
+                              MessageBoxButton.OK, 
+                              MessageBoxImage.Error);
+                
+                // Все равно вызываем завершение
+                LoadingComplete?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        
+        // Публичный метод для получения пути к видео
+        public string GetVideoPath()
+        {
+            return VideoPath;
+        }
+        
+        // Метод для сброса состояния
+        public void Reset()
+        {
+            VideoPath = string.Empty;
             MainPanel.Visibility = Visibility.Visible;
             LoadingPanel.Visibility = Visibility.Collapsed;
-            
             LoadingProgressBar.Value = 0;
             ProgressPercentageText.Text = "0%";
-            StatusTextBlock.Text = "Подготовка к загрузке...";
-        }
-        
-        // Публичный метод для симуляции загрузки видео (для тестов)
-        public void SimulateVideoLoad()
-        {
-            StartVideoLoading();
+            StatusTextBlock.Text = "Готов к загрузке видео";
         }
     }
 }

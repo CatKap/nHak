@@ -202,8 +202,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
-                <Button x:Name="HeatmapButton"
-                        Content="🗺 Тепловая карта"
+                <Button x:Name="StatisticsButton"
+                        Content="📊 Статистика"
                         Background="#EBEBEB"
                         Foreground="#333333"
                         BorderThickness="0"
