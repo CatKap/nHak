@@ -87,3 +87,5 @@ D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Component
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\ScenaryBuilder_MarkupCompile.lref
 D:\Work\Codes\hackathons\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\StartupScreen.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\FeedbackForm.baml
+C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\Components\FeedbackForm.g.cs

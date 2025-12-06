@@ -51,5 +51,36 @@ namespace EmotionAnalyzer.Components
             // Открытие окна с полным отчётом анализа
             // Будет реализовано другими разработчиками
         }
+        // Обработчик открытия формы обратной связи
+
+        // Этот метод ОБЯЗАТЕЛЬНО должен быть
+        private void OpenFeedbackButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Просто переключаем видимость
+            if (AnalyticsPanel != null && FeedbackFormComponent != null)
+            {
+                AnalyticsPanel.Visibility = Visibility.Collapsed;
+                FeedbackFormComponent.Visibility = Visibility.Visible;
+            }
+        }
+
+        // Эти методы тоже должны быть
+        private void FeedbackForm_Submitted(object sender, RoutedEventArgs e)
+        {
+            if (FeedbackFormComponent != null && AnalyticsPanel != null)
+            {
+                FeedbackFormComponent.Visibility = Visibility.Collapsed;
+                AnalyticsPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void FeedbackForm_Cancelled(object sender, RoutedEventArgs e)
+        {
+            if (FeedbackFormComponent != null && AnalyticsPanel != null)
+            {
+                FeedbackFormComponent.Visibility = Visibility.Collapsed;
+                AnalyticsPanel.Visibility = Visibility.Visible;
+            }
+        }
     }
 }

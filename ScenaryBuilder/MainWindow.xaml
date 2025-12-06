@@ -62,5 +62,6 @@
                                      Panel.ZIndex="100"
                                      MinimizeClick="MinimizeButton_Click"
                                      CloseClick="CloseButton_Click"/>
+
     </Grid>
 </Window>

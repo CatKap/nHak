@@ -78,7 +78,7 @@ namespace EmotionAnalyzer
                 MainInterfaceGrid.Visibility = Visibility.Visible;
             });
         }
-        
+
         // Метод для сброса к начальному экрану
         public void ShowStartupScreen()
         {
