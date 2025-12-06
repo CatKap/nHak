@@ -21,7 +21,7 @@ namespace EmotionAnalyzer.Components
         private bool _isFullscreen = false;
         private string _currentVideoPath = string.Empty;
         private Window? _fullscreenWindow;
-        
+        private CalibrationWindow? _calibrationWindow;
         // Статистика пользовательских действий
         private List<UserAction> _userActions = new List<UserAction>();
         private DateTime _sessionStartTime;
@@ -50,6 +50,7 @@ namespace EmotionAnalyzer.Components
             
             // Начинаем сбор статистики
             StartStatisticsCollection();
+
         }
         
         private void StartStatisticsCollection()
@@ -452,10 +453,378 @@ namespace EmotionAnalyzer.Components
         }
 
         private void OnStatisticsClicked(object sender, RoutedEventArgs e)
-        {
-            ShowStatisticsWindow();
-        }
+{
+    ShowCalibrationWindow();
+}
 
+    private void ShowCalibrationWindow()
+    {
+        // Создаем окно калибровки на весь экран
+        var calibrationWindow = new Window
+        {
+            Title = "Калибровка устройства",
+            WindowState = WindowState.Maximized,
+            WindowStyle = WindowStyle.None,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            Background = new SolidColorBrush(Color.FromRgb(248, 249, 250)), // #F8F9FA
+            Topmost = true
+        };
+
+        // Основной контейнер
+        var mainGrid = new Grid();
+        mainGrid.Background = Brushes.Transparent;
+
+        // Центральный блок с информацией (белая карточка)
+        var centerCard = new Border
+        {
+            Width = 600,
+            Padding = new Thickness(40),
+            Background = Brushes.White,
+            BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224)), // #E0E0E0
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(12),
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+
+        var centerPanel = new StackPanel
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Background = Brushes.Transparent
+        };
+
+        // Иконка устройства
+        var deviceIcon = new Grid
+        {
+            Width = 100,
+            Height = 100,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 30)
+        };
+
+        var iconEllipse = new Border
+        {
+            Width = 100,
+            Height = 100,
+            CornerRadius = new CornerRadius(50), // Делаем круг
+            Background = new SolidColorBrush(Color.FromArgb(20, 30, 144, 255))
+        };
+
+        var iconText = new TextBlock
+        {
+            Text = "📷",
+            FontSize = 48,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+
+        deviceIcon.Children.Add(iconEllipse);
+        deviceIcon.Children.Add(iconText);
+
+        // 1. Устройство подключено
+        var deviceConnectedText = new TextBlock
+        {
+            Text = "Устройство подключено",
+            FontSize = 28,
+            FontWeight = FontWeights.Bold,
+            Foreground = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 15)
+        };
+
+        // 2. Начинается калибровка...
+        var calibrationStartText = new TextBlock
+        {
+            Text = "Начинается калибровка...",
+            FontSize = 22,
+            Foreground = new SolidColorBrush(Color.FromRgb(51, 51, 51)), // #333333
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 40)
+        };
+
+        // 3. Предупреждение в синей рамке
+        var warningBorder = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(15, 30, 144, 255)), // #1E90FF с прозрачностью
+            BorderBrush = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+            BorderThickness = new Thickness(2),
+            CornerRadius = new CornerRadius(8),
+            Padding = new Thickness(25, 20, 25, 20),
+            Margin = new Thickness(0, 0, 0, 40),
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+
+        var warningPanel = new StackPanel();
+        
+        var warningTitle = new TextBlock
+        {
+            Text = "⚠️ ВНИМАНИЕ",
+            FontSize = 18,
+            FontWeight = FontWeights.Bold,
+            Foreground = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 8)
+        };
+
+        var warningText = new TextBlock
+        {
+            Text = "Не двигайтесь и не думайте ни о чём",
+            FontSize = 16,
+            Foreground = new SolidColorBrush(Color.FromRgb(51, 51, 51)), // #333333
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+
+        warningPanel.Children.Add(warningTitle);
+        warningPanel.Children.Add(warningText);
+        warningBorder.Child = warningPanel;
+
+        // 4. Таймер в отдельном блоке
+        var timerBlock = new StackPanel
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 0, 0, 40)
+        };
+
+        var timerText = new TextBlock
+        {
+            Text = "20",
+            FontSize = 64,
+            FontWeight = FontWeights.Bold,
+            Foreground = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+
+        var secondsText = new TextBlock
+        {
+            Text = "секунд",
+            FontSize = 20,
+            Foreground = new SolidColorBrush(Color.FromRgb(102, 102, 102)), // #666666
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(0, 5, 0, 0)
+        };
+
+        // Прогресс-бар
+        var progressBarBorder = new Border
+        {
+            Width = 300,
+            Height = 12,
+            Background = new SolidColorBrush(Color.FromRgb(235, 235, 235)), // #EBEBEB
+            CornerRadius = new CornerRadius(6),
+            Margin = new Thickness(0, 20, 0, 0),
+            HorizontalAlignment = HorizontalAlignment.Center
+        };
+
+        var progressFill = new Border
+        {
+            Name = "ProgressFill",
+            Width = 0,
+            Height = 12,
+            Background = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+            CornerRadius = new CornerRadius(6),
+            HorizontalAlignment = HorizontalAlignment.Left
+        };
+
+        progressBarBorder.Child = progressFill;
+
+        timerBlock.Children.Add(timerText);
+        timerBlock.Children.Add(secondsText);
+        timerBlock.Children.Add(progressBarBorder);
+
+        // Собираем центральную панель
+        centerPanel.Children.Add(deviceIcon);
+        centerPanel.Children.Add(deviceConnectedText);
+        centerPanel.Children.Add(calibrationStartText);
+        centerPanel.Children.Add(warningBorder);
+        centerPanel.Children.Add(timerBlock);
+
+        centerCard.Child = centerPanel;
+
+        // Добавляем в главный Grid
+        mainGrid.Children.Add(centerCard);
+
+        // Кнопка отмены (стилизованная)
+        var cancelButton = new Button
+        {
+            Content = "Отменить калибровку",
+            Width = 180,
+            Height = 40,
+            FontSize = 14,
+            Background = Brushes.Transparent,
+            BorderBrush = new SolidColorBrush(Color.FromRgb(204, 204, 204)), // #CCCCCC
+            BorderThickness = new Thickness(1),
+            Foreground = new SolidColorBrush(Color.FromRgb(102, 102, 102)), // #666666
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Bottom,
+            Margin = new Thickness(0, 0, 0, 50),
+            Cursor = Cursors.Hand
+        };
+
+        // Стиль для кнопки отмены
+        var cancelButtonStyle = new Style(typeof(Button));
+        var controlTemplate = new ControlTemplate(typeof(Button));
+
+        var border = new FrameworkElementFactory(typeof(Border));
+        border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Button.BackgroundProperty));
+        border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Button.BorderBrushProperty));
+        border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Button.BorderThicknessProperty));
+        border.SetValue(Border.CornerRadiusProperty, new CornerRadius(4));
+        border.SetValue(Border.PaddingProperty, new Thickness(15, 8, 15, 8));
+
+        var contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+        contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+        contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+        border.AppendChild(contentPresenter);
+        controlTemplate.VisualTree = border;
+
+        // Триггеры для наведения и нажатия
+        var isMouseOverTrigger = new Trigger
+        {
+            Property = Button.IsMouseOverProperty,
+            Value = true,
+            Setters = {
+                new Setter(Button.BackgroundProperty, new SolidColorBrush(Color.FromRgb(245, 245, 245))), // #F5F5F5
+                new Setter(Button.ForegroundProperty, new SolidColorBrush(Color.FromRgb(51, 51, 51))) // #333333
+            }
+        };
+
+        var isPressedTrigger = new Trigger
+        {
+            Property = Button.IsPressedProperty,
+            Value = true,
+            Setters = {
+                new Setter(Button.BackgroundProperty, new SolidColorBrush(Color.FromRgb(224, 224, 224))) // #E0E0E0
+            }
+        };
+
+        controlTemplate.Triggers.Add(isMouseOverTrigger);
+        controlTemplate.Triggers.Add(isPressedTrigger);
+
+        cancelButtonStyle.Setters.Add(new Setter(Button.TemplateProperty, controlTemplate));
+        cancelButton.Style = cancelButtonStyle;
+
+        cancelButton.Click += (s, args) =>
+        {
+            calibrationWindow.Close();
+        };
+
+        mainGrid.Children.Add(cancelButton);
+
+        calibrationWindow.Content = mainGrid;
+
+        // Таймер на 20 секунд
+        int secondsRemaining = 20;
+        var timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+
+        timer.Tick += (s, args) =>
+        {
+            secondsRemaining--;
+            timerText.Text = secondsRemaining.ToString();
+            
+            // Обновляем прогресс-бар
+            double progress = ((20 - secondsRemaining) / 20.0) * 300;
+            progressFill.Width = progress;
+
+            if (secondsRemaining <= 0)
+            {
+                timer.Stop();
+                
+                // Показываем сообщение о завершении в стиле приложения
+                var completionDialog = new Window
+                {
+                    Title = "Калибровка завершена",
+                    Width = 400,
+                    Height = 220,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    WindowStyle = WindowStyle.SingleBorderWindow,
+                    ResizeMode = ResizeMode.NoResize,
+                    Background = new SolidColorBrush(Color.FromRgb(248, 249, 250)) // #F8F9FA
+                };
+
+                var completionCard = new Border
+                {
+                    Background = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(224, 224, 224)), // #E0E0E0
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(8),
+                    Padding = new Thickness(30),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+                var completionPanel = new StackPanel
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Background = Brushes.Transparent
+                };
+
+                var checkIcon = new TextBlock
+                {
+                    Text = "✅",
+                    FontSize = 48,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0, 0, 0, 20)
+                };
+
+                var completionText = new TextBlock
+                {
+                    Text = "Калибровка завершена успешно!",
+                    FontSize = 18,
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = new SolidColorBrush(Color.FromRgb(30, 144, 255)), // #1E90FF
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextAlignment = TextAlignment.Center
+                };
+
+                var autoCloseText = new TextBlock
+                {
+                    Text = "Окно закроется автоматически...",
+                    FontSize = 14,
+                    Foreground = new SolidColorBrush(Color.FromRgb(136, 136, 136)), // #888888
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0, 10, 0, 0)
+                };
+
+                completionPanel.Children.Add(checkIcon);
+                completionPanel.Children.Add(completionText);
+                completionPanel.Children.Add(autoCloseText);
+                completionCard.Child = completionPanel;
+                completionDialog.Content = completionCard;
+
+                // Автоматически закрываем через 2 секунды
+                var closeTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(2)
+                };
+
+                closeTimer.Tick += (closeS, closeArgs) =>
+                {
+                    closeTimer.Stop();
+                    completionDialog.Close();
+                    calibrationWindow.Close();
+                };
+
+                closeTimer.Start();
+                completionDialog.ShowDialog();
+            }
+        };
+
+        // Обработчик клавиши Escape для выхода
+        calibrationWindow.PreviewKeyDown += (s, args) =>
+        {
+            if (args.Key == Key.Escape)
+            {
+                calibrationWindow.Close();
+            }
+        };
+
+        // Показываем окно и запускаем таймер
+        calibrationWindow.Show();
+        timer.Start();
+    }
         private void ShowStatisticsWindow()
         {
             var statsWindow = new Window
@@ -912,6 +1281,43 @@ namespace EmotionAnalyzer.Components
             }
             
             return summary;
+        }
+         private void StatisticsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Создаем окно калибровки
+            _calibrationWindow = new CalibrationWindow();
+            
+            // Создаем модальное окно
+            var calibrationDialog = new Window
+            {
+                Title = "Калибровка устройства",
+                Content = _calibrationWindow,
+                Width = 600,
+                Height = 500,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                ResizeMode = ResizeMode.NoResize,
+                WindowStyle = WindowStyle.SingleBorderWindow
+            };
+            
+            // Подписываемся на события калибровки
+            _calibrationWindow.CalibrationCompleted += (s, args) =>
+            {
+                calibrationDialog.Close();
+                MessageBox.Show("Калибровка завершена успешно!", "Готово", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                // Здесь можно открыть статистику
+            };
+            
+            _calibrationWindow.CalibrationCancelled += (s, args) =>
+            {
+                calibrationDialog.Close();
+                MessageBox.Show("Калибровка отменена", "Отменено", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            };
+            
+            // Показываем окно и запускаем калибровку
+            calibrationDialog.ShowDialog();
+            _calibrationWindow.StartCalibration();
         }
     }
 }
