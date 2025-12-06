@@ -32,7 +32,8 @@ namespace EmotionAnalyzer.Components
         private BrainBitManager? _brainBitManager;
         private List<BrainBitManager.AnalysisData> _brainBitData = new List<BrainBitManager.AnalysisData>();
         private bool _isBrainBitAnalyzing = false;
-
+        private bool _isWaitingForBrainBitData = false;
+        private BrainBitManager.AnalysisData? _firstBrainBitData = null;
         // Класс для хранения действий пользователя
         public class UserAction
         {
@@ -67,18 +68,7 @@ namespace EmotionAnalyzer.Components
         }
 
 // Новый обработчик для обновления данных в реальном времени
-        private void OnBrainBitDataForRealTime(BrainBitManager.AnalysisData data)
-        {
-            // Передаем данные в менеджер
-            RealTimeDataManager.Instance.AddBrainBitData(data);
-    
-            // Обновляем интерфейс через Dispatcher
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Отправляем данные на обновление графиков
-                UpdateRealTimeCharts(data);
-            });
-        }
+        
 
 // Метод для обновления графиков
         private void UpdateRealTimeCharts(BrainBitManager.AnalysisData data)
@@ -206,22 +196,20 @@ namespace EmotionAnalyzer.Components
                     _isPlaying = false;
                 }
 
+                // Загружаем видео, но НЕ воспроизводим сразу
                 _mediaPlayer.Source = new Uri(videoPath, UriKind.Absolute);
-                _mediaPlayer.Play();
+                _mediaPlayer.Stop(); // Останавливаем сразу
 
-                _isPlaying = true;
+                _isPlaying = false;
+                _isWaitingForBrainBitData = true; // Устанавливаем флаг ожидания данных
                 UpdatePlayPauseButton();
-
-                if (_progressTimer != null && !_progressTimer.IsEnabled)
-                {
-                    _progressTimer.Start();
-                }
 
                 UpdateVideoInfo(videoPath);
                 VideoTimestamp.Text = "00:00 / 00:00";
 
                 // Логируем загрузку видео
                 LogAction("video_load", TimeSpan.Zero, Path.GetFileName(videoPath));
+                
             }
             catch (Exception ex)
             {
@@ -229,13 +217,65 @@ namespace EmotionAnalyzer.Components
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        private bool IsBrainBitDataValid(BrainBitManager.AnalysisData data)
+        {
+            // Проверяем, что получены осмысленные данные
+            // (не нули и не начальные калибровочные значения)
+            return data.Alpha > 0.1 || 
+                   data.Beta > 0.1 || 
+                   data.InstAttention > 0.1 ||
+                   data.InstRelaxation > 0.1;
+        }
+        private void OnBrainBitDataForRealTime(BrainBitManager.AnalysisData data)
+        {
+            // Передаем данные в менеджер
+            RealTimeDataManager.Instance.AddBrainBitData(data);
+    
+            // Обновляем интерфейс через Dispatcher
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Отправляем данные на обновление графиков
+                UpdateRealTimeCharts(data);
+            });
+        }
         private void ResetStatisticsForNewVideo()
         {
             _sessionStartTime = DateTime.Now;
             _userActions.Clear();
             _brainBitData.Clear();
             LogAction("new_video_load", TimeSpan.Zero, "Загрузка нового видео");
+        }
+        
+        private void StartVideoAfterBrainBitReady()
+        {
+            if (_mediaPlayer == null) return;
+    
+            try
+            {
+                _mediaPlayer.Play();
+                _isPlaying = true;
+                _isWaitingForBrainBitData = false;
+                UpdatePlayPauseButton();
+        
+                if (_progressTimer != null && !_progressTimer.IsEnabled)
+                {
+                    _progressTimer.Start();
+                }
+        
+                // Скрываем сообщение о ожидании
+        
+                // Логируем начало воспроизведения
+                LogAction("video_start_after_brainbit", TimeSpan.Zero, 
+                    new { BrainBitSamples = _brainBitData.Count });
+        
+                MessageBox.Show($"Данные BrainBit получены! Начинаем воспроизведение.",
+                    "Готово", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при запуске видео: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void UpdateVideoInfo(string videoPath)
@@ -516,110 +556,63 @@ namespace EmotionAnalyzer.Components
         }
 
         private async void OnStatisticsClicked(object sender, RoutedEventArgs e)
+{
+    // 1. Перематываем видео в начало
+    if (_mediaPlayer != null)
+    {
+        _mediaPlayer.Position = TimeSpan.Zero;
+        if (_isPlaying)
         {
-            // 1. Перематываем видео в начало
-            if (_mediaPlayer != null)
+            _mediaPlayer.Pause();
+            _isPlaying = false;
+            UpdatePlayPauseButton();
+        }
+
+        UpdateVideoTimestamp();
+    }
+
+    // 2. Запускаем анализ BrainBit
+    if (_mediaPlayer?.NaturalDuration.HasTimeSpan == true && _brainBitManager != null)
+    {
+        try
+        {
+            var videoDuration = _mediaPlayer.NaturalDuration.TimeSpan;
+
+            // Очищаем предыдущие данные
+            _brainBitData.Clear();
+            _firstBrainBitData = null;
+            _isWaitingForBrainBitData = true;
+
+            // Запускаем анализ
+            bool analysisStarted = await _brainBitManager.StartAnalysis(videoDuration);
+
+            if (analysisStarted)
             {
-                _mediaPlayer.Position = TimeSpan.Zero;
-                if (_isPlaying)
-                {
-                    _mediaPlayer.Pause();
-                    _isPlaying = false;
-                    UpdatePlayPauseButton();
-                }
-
-                UpdateVideoTimestamp();
-            }
-
-            // 2. Запускаем анализ BrainBit
-            if (_mediaPlayer?.NaturalDuration.HasTimeSpan == true && _brainBitManager != null)
-            {
-                try
-                {
-                    var videoDuration = _mediaPlayer.NaturalDuration.TimeSpan;
-
-                    // Очищаем предыдущие данные
-                    _brainBitData.Clear();
-
-                    // Показываем окно ожидания
-                    var waitWindow = new Window
-                    {
-                        Title = "Подготовка анализа",
-                        Width = 300,
-                        Height = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Owner = Window.GetWindow(this)
-                    };
-
-                    var stackPanel = new StackPanel
-                    {
-                        Margin = new Thickness(20),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Center
-                    };
-
-                    var progressBar = new ProgressBar
-                    {
-                        IsIndeterminate = true,
-                        Width = 200,
-                        Height = 20,
-                        Margin = new Thickness(0, 0, 0, 10)
-                    };
-
-                    var textBlock = new TextBlock
-                    {
-                        Text = "Подготовка нейроинтерфейса...\nЭто может занять до 30 секунд",
-                        TextAlignment = TextAlignment.Center
-                    };
-
-                    stackPanel.Children.Add(progressBar);
-                    stackPanel.Children.Add(textBlock);
-                    waitWindow.Content = stackPanel;
-
-                    // Запускаем окно в фоновом режиме
-                    waitWindow.Show();
-
-                    // Запускаем анализ
-                    bool analysisStarted = await _brainBitManager.StartAnalysis(videoDuration);
-
-                    // Закрываем окно ожидания
-                    waitWindow.Close();
-
-                    if (analysisStarted)
-                    {
-                        MessageBox.Show(
-                            "Анализ начался. Пожалуйста, носите нейрогарнитуру во время просмотра видео.\nНажмите 'Стоп' в окне анализа для завершения.",
-                            "Анализ запущен",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information);
-
-                        // Показываем окно анализа в реальном времени
-                        ShowRealTimeAnalysisWindow(videoDuration);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Не удалось запустить анализ. Проверьте подключение нейрогарнитуры.",
-                            "Ошибка",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка запуска анализа: {ex.Message}",
-                        "Ошибка",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
+                // Не запускаем видео сразу - ждем данных BrainBit
+                MessageBox.Show(
+                    "Анализ начался. Носите нейрогарнитуру.\nВидео запустится автоматически при получении данных.",
+                    "Анализ запущен",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("Видео не загружено или не удалось определить длительность",
-                    "Ошибка",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+            
             }
         }
+        catch (Exception ex)
+        {
+          
+        }
+    }
+    else
+    {
+        MessageBox.Show("Видео не загружено или не удалось определить длительность",
+            "Ошибка",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+    }
+}
 
         private void ShowRealTimeAnalysisWindow(TimeSpan videoDuration)
         {
@@ -775,7 +768,8 @@ namespace EmotionAnalyzer.Components
                 Width = 700,
                 Height = 500,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = Window.GetWindow(this)
+                Owner = Window.GetWindow(this),
+                ShowInTaskbar = false
             };
 
             var tabControl = new TabControl();
@@ -784,6 +778,14 @@ namespace EmotionAnalyzer.Components
             var brainBitTab = new TabItem
             {
                 Header = "📊 Данные нейроинтерфейса"
+            };
+            statsWindow.Closed += (s, e) =>
+            {
+                // Возвращаем фокус на главное окно
+                if (Window.GetWindow(this) != null)
+                {
+                    Window.GetWindow(this).Focus();
+                }
             };
 
             var brainBitTextBox = new TextBox
@@ -884,7 +886,7 @@ namespace EmotionAnalyzer.Components
             mainGrid.Children.Add(buttonPanel);
 
             statsWindow.Content = mainGrid;
-            statsWindow.ShowDialog();
+            statsWindow.Show();
         }
 
         private void UpdateBrainBitStatisticsTextBox(TextBox textBox)

@@ -124,7 +124,7 @@ namespace EmotionAnalyzer
             var progressTask = Task.Run(async () =>
             {
                 int seconds = 0;
-                while (!foundEvent.Task.IsCompleted && seconds < 15)
+                while (!foundEvent.Task.IsCompleted && seconds < 60)
                 {
                     await Task.Delay(1000);
                     seconds++;
@@ -135,7 +135,7 @@ namespace EmotionAnalyzer
                 }
             });
             
-            await Task.WhenAny(foundEvent.Task, Task.Delay(15000));
+            await Task.WhenAny(foundEvent.Task, Task.Delay(60000));
             
             if (!foundEvent.Task.IsCompleted)
             {

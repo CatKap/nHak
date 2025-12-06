@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ScenaryBuilder")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff71e03176cbcc38ff37181219ce42ecccea2767")]
 [assembly: System.Reflection.AssemblyProductAttribute("ScenaryBuilder")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ScenaryBuilder")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
