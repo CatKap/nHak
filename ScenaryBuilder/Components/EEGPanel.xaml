@@ -1,0 +1,98 @@
+<UserControl x:Class="EmotionAnalyzer.Components.EEGPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+
+    <Border Background="#FFFFFF"
+            BorderThickness="1"
+            BorderBrush="#E0E0E0"  
+            CornerRadius="8"
+            Padding="24">
+        
+        <Grid SnapsToDevicePixels="True"
+              UseLayoutRounding="True">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок ЭЭГ -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="Электроэнцефалография"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#000000"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"/>
+                
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="ЭЭГ"
+                               FontSize="14"
+                               Foreground="#999999"
+                               Margin="0,0,16,0"/>
+                    <TextBlock x:Name="JoyIndicator"
+                               Text="Радость"
+                               FontSize="14"
+                               Foreground="#1E90FF"/>
+                </StackPanel>
+            </Grid>
+            
+            <!-- Каналы ЭЭГ -->
+            <StackPanel Grid.Row="1">
+                <!-- Альфа канал -->
+                <StackPanel Margin="0,0,0,16">
+                    <Grid Margin="0,0,0,8">
+                        <TextBlock Text="Альфа канал"
+                                   FontSize="14"
+                                   Foreground="#000000"
+                                   HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="AlphaRelaxation"
+                                   Text="Расслабление 83%"
+                                   FontSize="12"
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <Border x:Name="AlphaChannelContainer"
+                            Background="#FAFAFA"
+                            Height="80"
+                            CornerRadius="4">
+                        <!-- График альфа канала -->
+                        <TextBlock Text="График альфа канала"
+                                   Foreground="#999999"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+                
+                <!-- Бета канал -->
+                <StackPanel>
+                    <Grid Margin="0,0,0,8">
+                        <TextBlock Text="Бета канал"
+                                   FontSize="14"
+                                   Foreground="#000000"
+                                   HorizontalAlignment="Left"/>
+                        <TextBlock x:Name="BetaAttention"
+                                   Text="Повышенное внимание 17%"
+                                   FontSize="12"
+                                   Foreground="#333333"
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                    
+                    <Border x:Name="BetaChannelContainer"
+                            Background="#FAFAFA"
+                            Height="80"
+                            CornerRadius="4">
+                        <!-- График бета канала -->
+                        <TextBlock Text="График бета канала"
+                                   Foreground="#999999"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

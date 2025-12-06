@@ -8,24 +8,31 @@
     "net10.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Lenovo\\.nuget\\packages\\": {}
+    "C:\\Users\\никита\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Work\\Codes\\hackathons\\nHak\\ScenaryBuilder\\ScenaryBuilder.csproj",
+      "projectUniqueName": "C:\\Users\\никита\\Desktop\\cloneHak\\nHak\\ScenaryBuilder\\ScenaryBuilder.csproj",
       "projectName": "ScenaryBuilder",
-      "projectPath": "D:\\Work\\Codes\\hackathons\\nHak\\ScenaryBuilder\\ScenaryBuilder.csproj",
-      "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-      "outputPath": "D:\\Work\\Codes\\hackathons\\nHak\\ScenaryBuilder\\obj\\",
+      "projectPath": "C:\\Users\\никита\\Desktop\\cloneHak\\nHak\\ScenaryBuilder\\ScenaryBuilder.csproj",
+      "packagesPath": "C:\\Users\\никита\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\никита\\Desktop\\cloneHak\\nHak\\ScenaryBuilder\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\никита\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net10.0-windows"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

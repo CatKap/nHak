@@ -1,0 +1,205 @@
+<UserControl x:Class="EmotionAnalyzer.Components.StartupScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:EmotionAnalyzer.Components.WindowControls">
+    
+    <Grid Background="#FFFFFF">
+        <!-- Основной контейнер с пунктирной границей -->
+        <Grid HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Margin="60">
+            
+            <!-- Фоновый Border (белый) -->
+            <Border Background="#FFFFFF" 
+                    CornerRadius="20"
+                    Padding="40">
+                
+                <Grid SnapsToDevicePixels="True"
+          UseLayoutRounding="True">
+                    <!-- Основной интерфейс (видим по умолчанию) -->
+                    <StackPanel x:Name="MainPanel"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center"
+                                Visibility="Visible">
+                        
+                        <!-- Иконка -->
+                       <Grid Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,30">
+                    <!-- Фоновая картинка -->
+    <!-- Фоновая картинка -->
+    <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Rectangle21.svg" 
+           Width="80" 
+           Height="80"
+           Stretch="Uniform"/>
+    
+    <!-- Поверхностная картинка -->
+    <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Group2612.svg" 
+           Width="45" 
+           Height="45"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           Stretch="Uniform"/>
+                </Grid>
+                        <!-- Заголовок -->
+                        <TextBlock Text="Перетащите видео сюда или нажмите кнопку ниже, "
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,0"
+                                   Foreground="#191919"/>
+
+                        <TextBlock Text="чтобы выбрать их на компьютере."
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,20"
+                                   Foreground="#191919"/>
+                        
+                        <!-- Описание -->
+                        <TextBlock Text="Убедитесь то что видео формата: MP4, MOV"
+                                   FontSize="18"
+                                   Foreground="#888888"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,40"/>
+                        
+                        <!-- Кнопка загрузки -->
+                        <Button x:Name="LoadButton"
+                                Content="📁 Загрузить видео"
+                                Width="280"
+                                Height="60"
+                                FontSize="20"
+                                Background="#EBEBEB"
+                                BorderBrush="#888888"
+                                HorizontalAlignment="Center"
+                                Cursor="Hand"
+                                Click="LoadButton_Click">
+                            
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="30"
+                                                        Padding="15,10">
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                      VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#005A9E"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter Property="Background" Value="#004A9E"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        
+                        <!-- Подсказка -->
+                        <TextBlock Text="Поддерживаемые форматы: MP4, MOV"
+                                   FontSize="14"
+                                   Foreground="#888888"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,30,0,0"/>
+                    </StackPanel>
+                    
+                    <!-- Интерфейс загрузки (скрыт по умолчанию) -->
+                    <StackPanel x:Name="LoadingPanel"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="280"
+                                Visibility="Collapsed">
+                        
+
+                        <!-- Сообщение о загрузке -->
+                        <TextBlock Text="Не выключайте приложение, видео грузится"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,20"
+                                   Foreground="#191919"/>
+                        
+                        <!-- Контейнер для прогресс бара -->
+                        <Grid Margin="0,0,0,5">
+                            <!-- Прогресс бар -->
+                            <ProgressBar x:Name="LoadingProgressBar"
+                                         Height="12"
+                                         Minimum="0"
+                                         Maximum="100"
+                                         Value="0"
+                                         Background="#EBEBEB"
+                                         BorderThickness="0"
+                                         VerticalAlignment="Center">
+                                <ProgressBar.Foreground>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#0066FF" Offset="0"/>
+                                        <GradientStop Color="#0066FF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </ProgressBar.Foreground>
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Grid x:Name="TemplateRoot">
+                                            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                                    Background="{TemplateBinding Background}" 
+                                                    CornerRadius="6"/>
+                                            <Border x:Name="PART_Track" 
+                                                    CornerRadius="6"/>
+                                            <Border x:Name="PART_Indicator" 
+                                                    CornerRadius="6" 
+                                                    HorizontalAlignment="Left" 
+                                                    Background="{TemplateBinding Foreground}"/>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
+                        </Grid>
+                        
+                        <!-- Проценты загрузки НИЖЕ прогресс бара -->
+                        <TextBlock x:Name="ProgressPercentageText"
+                                   Text="0%"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="#191919"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,5,0,15"/> <!-- Отступ снизу 15px -->
+                        
+                        <!-- Текущий статус -->
+                        <TextBlock x:Name="StatusTextBlock"
+                                   Text="Подготовка к загрузке..."
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Foreground="#888888"
+                                   Margin="0,0,0,20"/>
+                        
+                        
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Пунктирная граница поверх фона - БОЛЬШИЕ ПУНКТИРЫ -->
+            <Rectangle Stroke="#888888"
+                       StrokeThickness="2"
+                       StrokeDashArray="15 10" 
+                       StrokeDashCap="Square"
+                       RadiusX="20"
+                       RadiusY="20"/>
+            
+        </Grid>
+        
+    </Grid>
+</UserControl>
