@@ -184,3 +184,4 @@ C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\refint
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\ScenaryBuilder.pdb
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\ScenaryBuilder.genruntimeconfig.cache
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\ref\ScenaryBuilder.dll
+C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\ScenaryBuilder.sourcelink.json
