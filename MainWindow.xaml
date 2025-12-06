@@ -1,0 +1,66 @@
+﻿<Window x:Class="EmotionAnalyzer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:components="clr-namespace:EmotionAnalyzer.Components"
+        xmlns:controls="clr-namespace:EmotionAnalyzer.Components.WindowControls"
+        Title="Анализатор эмоций" 
+        WindowState="Maximized"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFFFFF"
+        ResizeMode="NoResize">
+    
+    <Grid>
+        <!-- Экран загрузки видео (виден по умолчанию) -->
+        <components:StartupScreen x:Name="StartupScreenComponent"
+                                  Visibility="Visible"/>
+        
+        <!-- Основной интерфейс (скрыт до загрузки видео) -->
+        <Grid x:Name="MainInterfaceGrid"
+              Margin="24"
+              Visibility="Collapsed">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Левая панель - Помощник -->
+            <components:HelperPanel x:Name="HelperPanelComponent"
+                                    Grid.Column="0"/>
+            
+            <!-- Центральная панель - Вовлечённость и ЭЭГ -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Вовлечённость -->
+                <components:EngagementPanel x:Name="EngagementPanelComponent"
+                                            Grid.Row="0"/>
+                
+                <!-- ЭЭГ -->
+                <components:EEGPanel x:Name="EEGPanelComponent"
+                                     Grid.Row="2"/>
+            </Grid>
+            
+            <!-- Правая панель - Видео информация -->
+            <components:VideoInfoPanel x:Name="VideoInfoPanelComponent"
+                                       Grid.Column="4"/>
+        </Grid>
+        
+        <!-- Панель управления окном - ВЫШЕ всего (Panel.ZIndex="100") -->
+        <controls:WindowControlPanel x:Name="WindowControlsPanel"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Top"
+                                     Margin="20"
+                                     Panel.ZIndex="100"
+                                     MinimizeClick="MinimizeButton_Click"
+                                     CloseClick="CloseButton_Click"/>
+    </Grid>
+</Window>
