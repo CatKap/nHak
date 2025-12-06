@@ -1,20 +1,20 @@
 ﻿ScenaryBuilder
-1.0.0.0
+
 
 winexe
 C#
 .cs
-C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\
+E:\hak\nHak\ScenaryBuilder\obj\Debug\net10.0-windows\
 ScenaryBuilder
 none
 false
 TRACE;DEBUG;NET;NET10_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-C:\Users\никита\Desktop\cloneHak\nHak\ScenaryBuilder\App.xaml
-81448180606
+E:\hak\nHak\ScenaryBuilder\App.xaml
+9-1600741951
 
-14-1422809800
+13-1903178489
 205-764538886
-Components\EEGPanel.xaml;Components\EngagementPanel.xaml;Components\FeedbackForm.xaml;Components\HelpersPanel.xaml;Components\StartupScreen.xaml;Components\VideoInfoPanel.xaml;Components\WindowControlPanel.xaml;MainWindow.xaml;
+Components\EEGPanel.xaml;Components\EngagementPanel.xaml;Components\FeedbackForm.xaml;Components\FeedBackPanel.xaml;Components\HelpersPanel.xaml;Components\StartupScreen.xaml;Components\VideoInfoPanel.xaml;Components\WindowControlPanel.xaml;MainWindow.xaml;
 
 True
 

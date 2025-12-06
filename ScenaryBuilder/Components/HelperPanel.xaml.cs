@@ -10,6 +10,16 @@ namespace EmotionAnalyzer.Components
         {
             InitializeComponent();
         }
+
+        // Событие для нейроанализа
+        public event RoutedEventHandler NeuroAnalysisClicked;
+
+        // Обработчик кнопки нейроанализа
+        private void NeuroAnalysisButton_Click(object sender, RoutedEventArgs e)
+        {
+            NeuroAnalysisClicked?.Invoke(sender, e);
+        }
+
         // Метод для добавления временных меток высокой активности из бэка
         public void AddHighActivityTimestamp(string timestamp)
         {
@@ -27,15 +37,14 @@ namespace EmotionAnalyzer.Components
         // Метод для обновления среднего показателя
         public void UpdateAverageMetric(string metric)
         {
-            // Обновление текста среднего показателя
-            // Будет реализовано другими разработчиками
+            AverageMetric.Text = metric;
         }
 
         // Метод для очистки всех временных меток
         public void ClearTimestamps()
         {
-            // Очистка контейнеров с метками
-            // Будет реализовано другими разработчиками
+            HighActivityTimestamps.Children.Clear();
+            LowActivityTimestamps.Children.Clear();
         }
 
         // Обработчик нажатия на временную метку
@@ -43,44 +52,6 @@ namespace EmotionAnalyzer.Components
         {
             // Переход к указанному времени в видео
             // Будет реализовано другими разработчиками
-        }
-
-        // Обработчик кнопки открытия полного результата
-        private void OpenFullResultsButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Открытие окна с полным отчётом анализа
-            // Будет реализовано другими разработчиками
-        }
-        // Обработчик открытия формы обратной связи
-
-        // Этот метод ОБЯЗАТЕЛЬНО должен быть
-        private void OpenFeedbackButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Просто переключаем видимость
-            if (AnalyticsPanel != null && FeedbackFormComponent != null)
-            {
-                AnalyticsPanel.Visibility = Visibility.Collapsed;
-                FeedbackFormComponent.Visibility = Visibility.Visible;
-            }
-        }
-
-        // Эти методы тоже должны быть
-        private void FeedbackForm_Submitted(object sender, RoutedEventArgs e)
-        {
-            if (FeedbackFormComponent != null && AnalyticsPanel != null)
-            {
-                FeedbackFormComponent.Visibility = Visibility.Collapsed;
-                AnalyticsPanel.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void FeedbackForm_Cancelled(object sender, RoutedEventArgs e)
-        {
-            if (FeedbackFormComponent != null && AnalyticsPanel != null)
-            {
-                FeedbackFormComponent.Visibility = Visibility.Collapsed;
-                AnalyticsPanel.Visibility = Visibility.Visible;
-            }
         }
     }
 }

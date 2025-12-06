@@ -67,7 +67,7 @@ namespace EmotionAnalyzer.Components.WindowControls {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/ScenaryBuilder;V1.0.0.0;component/components/windowcontrolpanel.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ScenaryBuilder;component/components/windowcontrolpanel.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Components\WindowControlPanel.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

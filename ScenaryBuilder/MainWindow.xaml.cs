@@ -25,48 +25,21 @@ namespace EmotionAnalyzer
         
         private void FindVideoInfoPanel()
         {
-            // Находим VideoInfoPanel в визуальном дереве
-            _videoInfoPanel = FindVisualChild<VideoInfoPanel>(MainInterfaceGrid);
-            
-            if (_videoInfoPanel == null)
-            {
-                // Если не нашли, попробуем другой способ
-                _videoInfoPanel = MainInterfaceGrid.FindName("VideoInfoPanelComponent") as VideoInfoPanel;
-            }
-        }
-        
-        private T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
-        {
-            if (parent == null) return null;
-            
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                if (child is T result)
-                    return result;
-                    
-                var childResult = FindVisualChild<T>(child);
-                if (childResult != null)
-                    return childResult;
-            }
-            return null;
+            _videoInfoPanel = MainInterfaceGrid.FindName("VideoInfoPanelComponent") as VideoInfoPanel;
         }
         
         private void OnLoadingComplete(object? sender, EventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
-                // Получаем путь к видео из StartupScreen
                 string videoPath = StartupScreenComponent.GetVideoPath();
                 
-                // Если нашли VideoInfoPanel, загружаем в него видео
                 if (_videoInfoPanel != null && !string.IsNullOrEmpty(videoPath))
                 {
                     _videoInfoPanel.LoadVideo(videoPath);
                 }
                 else if (!string.IsNullOrEmpty(videoPath))
                 {
-                    // Если не нашли через FindVisualChild, попробуем передать путь другим способом
                     MessageBox.Show("Видео загружено, но плеер не найден", 
                                   "Информация", 
                                   MessageBoxButton.OK, 
@@ -79,7 +52,42 @@ namespace EmotionAnalyzer
             });
         }
 
-        // Метод для сброса к начальному экрану
+        // Обработчики кнопок из FeedBackPanel
+        private void FeedBackPanel_OpenFullResultsClicked(object sender, RoutedEventArgs e)
+        {
+            // Логика открытия полных результатов
+            MessageBox.Show("Открытие полных результатов...");
+        }
+        
+        private void FeedBackPanel_OpenFeedbackClicked(object sender, RoutedEventArgs e)
+        {
+            // Скрываем HelperPanel и FeedBackPanel
+            HelperPanelComponent.Visibility = Visibility.Collapsed;
+            FeedBackPanelComponent.Visibility = Visibility.Collapsed;
+            
+            // Показываем форму обратной связи на весь левый столбец
+            FeedbackFormComponent.Visibility = Visibility.Visible;
+        }
+        
+        // Обработчики формы обратной связи
+        private void FeedbackForm_FormSubmitted(object sender, RoutedEventArgs e)
+        {
+            // Возвращаемся к исходному виду
+            FeedbackFormComponent.Visibility = Visibility.Collapsed;
+            HelperPanelComponent.Visibility = Visibility.Visible;
+            FeedBackPanelComponent.Visibility = Visibility.Visible;
+            
+            MessageBox.Show("Спасибо за обратную связь!", "Успех");
+        }
+        
+        private void FeedbackForm_FormCancelled(object sender, RoutedEventArgs e)
+        {
+            // Возвращаемся к исходному виду
+            FeedbackFormComponent.Visibility = Visibility.Collapsed;
+            HelperPanelComponent.Visibility = Visibility.Visible;
+            FeedBackPanelComponent.Visibility = Visibility.Visible;
+        }
+        
         public void ShowStartupScreen()
         {
             if (StartupScreenComponent != null)
@@ -88,15 +96,18 @@ namespace EmotionAnalyzer
                 StartupScreenComponent.Visibility = Visibility.Visible;
                 MainInterfaceGrid.Visibility = Visibility.Collapsed;
                 
-                // Останавливаем видео при возврате на стартовый экран
                 if (_videoInfoPanel != null)
                 {
                     _videoInfoPanel.StopVideo();
                 }
+                
+                // Скрываем форму обратной связи при возврате
+                FeedbackFormComponent.Visibility = Visibility.Collapsed;
+                HelperPanelComponent.Visibility = Visibility.Visible;
+                FeedBackPanelComponent.Visibility = Visibility.Visible;
             }
         }
         
-        // Простые обработчики с правильной сигнатурой
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -104,7 +115,6 @@ namespace EmotionAnalyzer
         
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            // Очищаем ресурсы видео перед закрытием
             if (_videoInfoPanel != null)
             {
                 _videoInfoPanel.Cleanup();
@@ -113,7 +123,6 @@ namespace EmotionAnalyzer
             this.Close();
         }
         
-        // Метод для явной передачи видео в плеер (если нужно из другого места)
         public void LoadVideoIntoPlayer(string videoPath)
         {
             if (_videoInfoPanel != null && !string.IsNullOrEmpty(videoPath))

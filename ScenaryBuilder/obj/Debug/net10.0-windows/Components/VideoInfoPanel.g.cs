@@ -155,7 +155,7 @@ namespace EmotionAnalyzer.Components {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/ScenaryBuilder;V1.0.0.0;component/components/videoinfopanel.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ScenaryBuilder;component/components/videoinfopanel.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Components\VideoInfoPanel.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
