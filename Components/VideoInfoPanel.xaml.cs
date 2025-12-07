@@ -509,118 +509,203 @@ namespace EmotionAnalyzer.Components
             ShowFinalStatisticsWindow();
         }
 
-        private void EnterFullscreenMode()
+private void EnterFullscreenMode()
+{
+    if (_mediaPlayer == null) return;
+
+    // Сохраняем текущее состояние
+    var originalPosition = _mediaPlayer.Position;
+    var wasPlaying = _isPlaying;
+    
+    // Останавливаем оригинальный плеер ПЕРЕД созданием полноэкранного
+    if (wasPlaying)
+    {
+        _mediaPlayer.Pause();
+        _progressTimer?.Stop();
+    }
+
+    _fullscreenWindow = new Window
+    {
+        WindowStyle = WindowStyle.None,
+        WindowState = WindowState.Maximized,
+        Title = "Видео - полноэкранный режим",
+        Background = Brushes.Black,
+        Topmost = true
+    };
+
+    var fullscreenPlayer = new MediaElement
+    {
+        Source = _mediaPlayer.Source,
+        Position = originalPosition,
+        Stretch = Stretch.Uniform,
+        LoadedBehavior = MediaState.Manual,
+        UnloadedBehavior = MediaState.Manual,
+        Volume = _mediaPlayer.Volume,
+        IsMuted = _mediaPlayer.IsMuted,
+        ScrubbingEnabled = true
+    };
+
+    // Воспроизводим в полноэкранном режиме, если оригинальный плеер был активен
+    if (wasPlaying)
+    {
+        fullscreenPlayer.Play();
+    }
+    else
+    {
+        fullscreenPlayer.Pause();
+    }
+
+    var exitButton = new Button
+    {
+        Content = "✕",
+        Width = 40,
+        Height = 40,
+        FontSize = 20,
+        Background = Brushes.Transparent,
+        Foreground = Brushes.White,
+        BorderThickness = new Thickness(0),
+        HorizontalAlignment = HorizontalAlignment.Right,
+        VerticalAlignment = VerticalAlignment.Top,
+        Margin = new Thickness(0, 10, 10, 0),
+        Cursor = Cursors.Hand
+    };
+
+    exitButton.Click += (s, e) => ExitFullscreenMode();
+
+    var grid = new Grid();
+    grid.Children.Add(fullscreenPlayer);
+    grid.Children.Add(exitButton);
+
+    _fullscreenWindow.Content = grid;
+
+    // Обработчик закрытия окна
+    _fullscreenWindow.Closed += (s, e) =>
+    {
+        if (!_isFullscreen) return;
+
+        // Обновляем позицию в оригинальном плеере
+        if (_mediaPlayer != null)
         {
-            if (_mediaPlayer == null) return;
-
-            _fullscreenWindow = new Window
+            _mediaPlayer.Position = fullscreenPlayer.Position;
+            
+            // ПРОВЕРЯЕМ ДЛИТЕЛЬНОСТЬ ПЕРЕД ОБРАЩЕНИЕМ К TimeSpan
+            bool isPlayingInFullscreen = false;
+            if (fullscreenPlayer.NaturalDuration.HasTimeSpan)
             {
-                WindowStyle = WindowStyle.None,
-                WindowState = WindowState.Maximized,
-                Title = "Видео - полноэкранный режим",
-                Background = Brushes.Black,
-                Topmost = true
-            };
-
-            var fullscreenPlayer = new MediaElement
-            {
-                Source = _mediaPlayer.Source,
-                Position = _mediaPlayer.Position,
-                Stretch = Stretch.Uniform,
-                LoadedBehavior = MediaState.Manual,
-                Volume = _mediaPlayer.Volume,
-                IsMuted = _mediaPlayer.IsMuted
-            };
-
-            if (_isPlaying)
-            {
-                fullscreenPlayer.Play();
+                isPlayingInFullscreen = fullscreenPlayer.Position < fullscreenPlayer.NaturalDuration.TimeSpan && 
+                                       fullscreenPlayer.Position > TimeSpan.Zero;
             }
             else
             {
-                fullscreenPlayer.Pause();
+                isPlayingInFullscreen = fullscreenPlayer.Position > TimeSpan.Zero;
             }
-
-            var exitButton = new Button
+            
+            if (isPlayingInFullscreen && fullscreenPlayer.HasAudio && fullscreenPlayer.CanPause)
             {
-                Content = "✕",
-                Width = 40,
-                Height = 40,
-                FontSize = 20,
-                Background = Brushes.Transparent,
-                Foreground = Brushes.White,
-                BorderThickness = new Thickness(0),
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(0, 10, 10, 0),
-                Cursor = Cursors.Hand
-            };
-
-            exitButton.Click += (s, e) => ExitFullscreenMode();
-
-            var grid = new Grid();
-            grid.Children.Add(fullscreenPlayer);
-            grid.Children.Add(exitButton);
-
-            _fullscreenWindow.Content = grid;
-
-            _fullscreenWindow.Closed += (s, e) =>
-            {
-                if (!_isFullscreen) return;
-
-                if (_mediaPlayer != null)
+                _mediaPlayer.Play();
+                _isPlaying = true;
+                if (_progressTimer != null && !_progressTimer.IsEnabled)
                 {
-                    _mediaPlayer.Position = fullscreenPlayer.Position;
+                    _progressTimer.Start();
                 }
-
-                ExitFullscreenMode();
-            };
-
-            _fullscreenWindow.PreviewKeyDown += (s, e) =>
+            }
+            else
             {
-                if (e.Key == System.Windows.Input.Key.Escape)
-                {
-                    ExitFullscreenMode();
-                }
-            };
-
-            _isFullscreen = true;
-            FullscreenButton.Content = "⛶";
-
-            this.Visibility = Visibility.Collapsed;
-
-            _fullscreenWindow.Show();
+                _mediaPlayer.Pause();
+                _isPlaying = false;
+            }
         }
+        
+        // Останавливаем полноэкранный плеер
+        fullscreenPlayer.Stop();
+        
+        // Очищаем ресурсы
+        fullscreenPlayer.Source = null;
+        
+        ExitFullscreenMode();
+    };
 
-        private void ExitFullscreenMode()
+    // Обработчик нажатия ESC
+    _fullscreenWindow.PreviewKeyDown += (s, e) =>
+    {
+        if (e.Key == System.Windows.Input.Key.Escape)
         {
-            if (!_isFullscreen || _fullscreenWindow == null || _mediaPlayer == null) return;
-
-            if (_fullscreenWindow.Content is Grid grid && grid.Children[0] is MediaElement fullscreenPlayer)
-            {
-                _mediaPlayer.Position = fullscreenPlayer.Position;
-
-                if (fullscreenPlayer.HasAudio && fullscreenPlayer.CanPause)
-                {
-                    if (fullscreenPlayer.Position < fullscreenPlayer.NaturalDuration.TimeSpan)
-                    {
-                        _mediaPlayer.Play();
-                        _isPlaying = true;
-                        _progressTimer?.Start();
-                    }
-                }
-            }
-
-            _fullscreenWindow.Close();
-            _fullscreenWindow = null;
-
-            _isFullscreen = false;
-            FullscreenButton.Content = "⛶";
-
-            this.Visibility = Visibility.Visible;
-
-            UpdatePlayPauseButton();
+            ExitFullscreenMode();
         }
+    };
+
+    _isFullscreen = true;
+    FullscreenButton.Content = "⛶";
+
+    // Скрываем оригинальный плеер
+    this.Visibility = Visibility.Collapsed;
+
+    _fullscreenWindow.Show();
+}
+
+private void ExitFullscreenMode()
+{
+    if (!_isFullscreen || _fullscreenWindow == null || _mediaPlayer == null) return;
+
+    // Получаем ссылку на полноэкранный плеер
+    MediaElement? fullscreenPlayer = null;
+    if (_fullscreenWindow.Content is Grid grid && grid.Children[0] is MediaElement player)
+    {
+        fullscreenPlayer = player;
+        
+        // Обновляем позицию в оригинальном плеере
+        _mediaPlayer.Position = fullscreenPlayer.Position;
+        
+        // ПРОВЕРЯЕМ, ЧТО ДЛИТЕЛЬНОСТЬ ОПРЕДЕЛЕНА
+        bool wasPlayingInFullscreen = false;
+        if (fullscreenPlayer.NaturalDuration.HasTimeSpan)
+        {
+            wasPlayingInFullscreen = fullscreenPlayer.Position < fullscreenPlayer.NaturalDuration.TimeSpan && 
+                                    fullscreenPlayer.Position > TimeSpan.Zero;
+        }
+        else
+        {
+            // Если длительность не определена, используем текущую позицию как индикатор
+            wasPlayingInFullscreen = fullscreenPlayer.Position > TimeSpan.Zero;
+        }
+        
+        // Если видео было воспроизведено, продолжаем в оригинальном плеере
+        if (wasPlayingInFullscreen && fullscreenPlayer.HasAudio && fullscreenPlayer.CanPause)
+        {
+            _mediaPlayer.Play();
+            _isPlaying = true;
+            if (_progressTimer != null && !_progressTimer.IsEnabled)
+            {
+                _progressTimer.Start();
+            }
+        }
+        else
+        {
+            _mediaPlayer.Pause();
+            _isPlaying = false;
+        }
+        
+        // Останавливаем полноэкранный плеер
+        fullscreenPlayer.Stop();
+        fullscreenPlayer.Source = null;
+    }
+
+    // Закрываем окно
+    _fullscreenWindow.Close();
+    _fullscreenWindow = null;
+
+    _isFullscreen = false;
+    FullscreenButton.Content = "⛶";
+
+    // Показываем оригинальный плеер
+    this.Visibility = Visibility.Visible;
+
+    // Обновляем кнопку воспроизведения
+    UpdatePlayPauseButton();
+    
+    // Обновляем временную метку
+    UpdateVideoTimestamp();
+}
 
 private async void OnStatisticsClicked(object sender, RoutedEventArgs e)
 {
@@ -904,134 +989,580 @@ private void StartBrainBitDataCheckTimer()
             textBox.Text = sb.ToString();
         }
 
-        private void ShowFinalStatisticsWindow()
+private void ShowFinalStatisticsWindow()
+{
+    var statsWindow = new Window
+    {
+        Title = "Результаты анализа эмоций",
+        Width = 800,
+        Height = 600,
+        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        Owner = Window.GetWindow(this),
+        ShowInTaskbar = false,
+        ResizeMode = ResizeMode.CanResize,
+        MinWidth = 700,
+        MinHeight = 500
+    };
+
+    var tabControl = new TabControl
+    {
+        Margin = new Thickness(5)
+    };
+
+    // Вкладка 1: Данные BrainBit
+    var brainBitTab = new TabItem
+    {
+        Header = "📊 Данные нейроинтерфейса"
+    };
+
+    var brainBitTextBox = new TextBox
+    {
+        Margin = new Thickness(10),
+        FontFamily = new FontFamily("Consolas"),
+        FontSize = 12,
+        IsReadOnly = true,
+        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+        TextWrapping = TextWrapping.NoWrap
+    };
+
+    UpdateBrainBitStatisticsTextBox(brainBitTextBox);
+    brainBitTab.Content = brainBitTextBox;
+
+    // Вкладка 2: Действия пользователя
+    var actionsTab = new TabItem
+    {
+        Header = "🎬 Действия пользователя"
+    };
+
+    var actionsTextBox = new TextBox
+    {
+        Margin = new Thickness(10),
+        FontFamily = new FontFamily("Consolas"),
+        FontSize = 12,
+        IsReadOnly = true,
+        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+        TextWrapping = TextWrapping.NoWrap
+    };
+
+    UpdateUserActionsTextBox(actionsTextBox);
+    actionsTab.Content = actionsTextBox;
+
+    // Вкладка 3: Комбинированные данные для нейронки
+    var combinedTab = new TabItem
+    {
+        Header = "🧠 Данные для нейронной сети"
+    };
+
+    var combinedTextBox = new TextBox
+    {
+        Margin = new Thickness(10),
+        FontFamily = new FontFamily("Consolas"),
+        FontSize = 11,
+        IsReadOnly = true,
+        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+        TextWrapping = TextWrapping.NoWrap
+    };
+
+    combinedTextBox.Text = GetCombinedDataForNeuralNetwork();
+    combinedTab.Content = combinedTextBox;
+
+    // Вкладка 4: Анкета пользователя (НОВАЯ)
+    var userInfoTab = new TabItem
+    {
+        Header = "👤 Анкета пользователя"
+    };
+
+    var userInfoPanel = CreateUserQuestionnairePanel();
+    userInfoTab.Content = userInfoPanel;
+
+    // Панель кнопок
+    var buttonPanel = new StackPanel
+    {
+        Orientation = Orientation.Horizontal,
+        HorizontalAlignment = HorizontalAlignment.Center,
+        Margin = new Thickness(0, 10, 0, 10)
+    };
+
+    var copyButton = new Button
+    {
+        Content = "📋 Копировать данные",
+        Margin = new Thickness(5),
+        Padding = new Thickness(10, 5, 10, 5),
+        Width = 150,
+        Height = 35,
+        Cursor = Cursors.Hand,
+        Background = new SolidColorBrush(Color.FromRgb(30, 144, 255)),
+        Foreground = Brushes.White,
+        BorderThickness = new Thickness(0)
+    };
+
+    var exportButton = new Button
+    {
+        Content = "💾 Экспорт в JSON",
+        Margin = new Thickness(5),
+        Padding = new Thickness(10, 5, 10, 5), // Left=10, Top=5, Right=10, Bottom=5
+        Width = 150,
+        Height = 35,
+        Cursor = Cursors.Hand,
+        Background = new SolidColorBrush(Color.FromRgb(30, 144, 255)),
+        Foreground = Brushes.White,
+        BorderThickness = new Thickness(0)
+    };
+
+    var closeButton = new Button
+    {
+        Content = "✕ Закрыть",
+        Margin = new Thickness(5),
+        Padding = new Thickness(10, 5, 10, 5),
+        Width = 100,
+        Height = 35,
+        Cursor = Cursors.Hand,
+        Background = new SolidColorBrush(Color.FromRgb(30, 144, 255)),
+        Foreground = Brushes.White,
+        BorderThickness = new Thickness(0)
+    };
+
+    copyButton.Click += (s, e) => Clipboard.SetText(GetCombinedDataForNeuralNetwork());
+    exportButton.Click += (s, e) => ExportAllDataWithQuestionnaire(userInfoPanel);
+    closeButton.Click += (s, e) => statsWindow.Close();
+
+    buttonPanel.Children.Add(copyButton);
+    buttonPanel.Children.Add(exportButton);
+    buttonPanel.Children.Add(closeButton);
+
+    // Добавляем все вкладки
+    tabControl.Items.Add(brainBitTab);
+    tabControl.Items.Add(actionsTab);
+    tabControl.Items.Add(combinedTab);
+    tabControl.Items.Add(userInfoTab);
+
+    // Основной layout
+    var mainGrid = new Grid();
+    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+    mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+    Grid.SetRow(tabControl, 0);
+    Grid.SetRow(buttonPanel, 1);
+
+    mainGrid.Children.Add(tabControl);
+    mainGrid.Children.Add(buttonPanel);
+
+    statsWindow.Content = mainGrid;
+    statsWindow.Show();
+}
+
+private StackPanel CreateUserQuestionnairePanel()
+{
+    var stackPanel = new StackPanel
+    {
+        Margin = new Thickness(20)
+    };
+
+    // Создаем словарь для хранения элементов
+    var elements = new Dictionary<string, FrameworkElement>();
+
+    // Заголовок анкеты
+    var headerText = new TextBlock
+    {
+        Text = "Анкета пользователя",
+        FontSize = 18,
+        FontWeight = FontWeights.Bold,
+        Foreground = Brushes.Navy,
+        Margin = new Thickness(0, 0, 0, 20)
+    };
+
+    // Имя
+    var nameLabel = new TextBlock
+    {
+        Text = "Имя:",
+        FontSize = 14,
+        FontWeight = FontWeights.SemiBold,
+        Margin = new Thickness(0, 10, 0, 0)
+    };
+
+    var nameTextBox = new TextBox
+    {
+        Height = 30,
+        FontSize = 14,
+        Margin = new Thickness(0, 5, 0, 10),
+        Tag = "name"
+    };
+    elements["name"] = nameTextBox;
+
+    // Возраст
+    var ageLabel = new TextBlock
+    {
+        Text = "Возраст:",
+        FontSize = 14,
+        FontWeight = FontWeights.SemiBold,
+        Margin = new Thickness(0, 5, 0, 0)
+    };
+
+    var ageTextBox = new TextBox
+    {
+        Height = 30,
+        FontSize = 14,
+        Margin = new Thickness(0, 5, 0, 10),
+        Tag = "age"
+    };
+    elements["age"] = ageTextBox;
+
+    // Пол
+    var genderLabel = new TextBlock
+    {
+        Text = "Пол:",
+        FontSize = 14,
+        FontWeight = FontWeights.SemiBold,
+        Margin = new Thickness(0, 5, 0, 0)
+    };
+
+    var genderComboBox = new ComboBox
+    {
+        Height = 30,
+        FontSize = 14,
+        Margin = new Thickness(0, 5, 0, 10),
+        Tag = "gender"
+    };
+    genderComboBox.Items.Add("Мужской");
+    genderComboBox.Items.Add("Женский");
+    genderComboBox.Items.Add("Предпочитаю не указывать");
+    genderComboBox.SelectedIndex = 0;
+    elements["gender"] = genderComboBox;
+
+    // Образование
+    var educationLabel = new TextBlock
+    {
+        Text = "Образование:",
+        FontSize = 14,
+        FontWeight = FontWeights.SemiBold,
+        Margin = new Thickness(0, 5, 0, 0)
+    };
+
+    var educationComboBox = new ComboBox
+    {
+        Height = 30,
+        FontSize = 14,
+        Margin = new Thickness(0, 5, 0, 10),
+        Tag = "education"
+    };
+    educationComboBox.Items.Add("Среднее");
+    educationComboBox.Items.Add("Среднее специальное");
+    educationComboBox.Items.Add("Неоконченное высшее");
+    educationComboBox.Items.Add("Высшее");
+    educationComboBox.Items.Add("Ученая степень");
+    educationComboBox.SelectedIndex = 3;
+    elements["education"] = educationComboBox;
+
+    // Добавляем все элементы в стекпанель в правильном порядке
+    stackPanel.Children.Add(headerText);
+    stackPanel.Children.Add(nameLabel);
+    stackPanel.Children.Add(nameTextBox);
+    stackPanel.Children.Add(ageLabel);
+    stackPanel.Children.Add(ageTextBox);
+    stackPanel.Children.Add(genderLabel);
+    stackPanel.Children.Add(genderComboBox);
+    stackPanel.Children.Add(educationLabel);
+    stackPanel.Children.Add(educationComboBox);
+
+    // Сохраняем ссылку на элементы в Tag
+    stackPanel.Tag = elements;
+
+    return stackPanel;
+}
+
+private Dictionary<string, object> GetQuestionnaireData(StackPanel questionnairePanel)
+{
+    var data = new Dictionary<string, object>();
+    
+    if (questionnairePanel?.Tag is Dictionary<string, FrameworkElement> elements)
+    {
+        foreach (var element in elements)
         {
-            var statsWindow = new Window
+            string value = string.Empty;
+            
+            switch (element.Value)
             {
-                Title = "Результаты анализа эмоций",
-                Width = 700,
-                Height = 500,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = Window.GetWindow(this),
-                ShowInTaskbar = false
-            };
-
-            var tabControl = new TabControl();
-
-            // Вкладка 1: Данные BrainBit
-            var brainBitTab = new TabItem
-            {
-                Header = "📊 Данные нейроинтерфейса"
-            };
-            statsWindow.Closed += (s, e) =>
-            {
-                // Возвращаем фокус на главное окно
-                if (Window.GetWindow(this) != null)
-                {
-                    Window.GetWindow(this).Focus();
-                }
-            };
-
-            var brainBitTextBox = new TextBox
-            {
-                Margin = new Thickness(10),
-                FontFamily = new FontFamily("Consolas"),
-                FontSize = 12,
-                IsReadOnly = true,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                TextWrapping = TextWrapping.NoWrap
-            };
-
-            UpdateBrainBitStatisticsTextBox(brainBitTextBox);
-            brainBitTab.Content = brainBitTextBox;
-
-            // Вкладка 2: Действия пользователя
-            var actionsTab = new TabItem
-            {
-                Header = "🎬 Действия пользователя"
-            };
-
-            var actionsTextBox = new TextBox
-            {
-                Margin = new Thickness(10),
-                FontFamily = new FontFamily("Consolas"),
-                FontSize = 12,
-                IsReadOnly = true,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                TextWrapping = TextWrapping.NoWrap
-            };
-
-            UpdateUserActionsTextBox(actionsTextBox);
-            actionsTab.Content = actionsTextBox;
-
-            // Вкладка 3: Комбинированные данные для нейронки
-            var combinedTab = new TabItem
-            {
-                Header = "🧠 Данные для нейронной сети"
-            };
-
-            var combinedTextBox = new TextBox
-            {
-                Margin = new Thickness(10),
-                FontFamily = new FontFamily("Consolas"),
-                FontSize = 11,
-                IsReadOnly = true,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                TextWrapping = TextWrapping.NoWrap
-            };
-
-            combinedTextBox.Text = GetCombinedDataForNeuralNetwork();
-            combinedTab.Content = combinedTextBox;
-
-            // Панель кнопок
-            var buttonPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 10, 0, 0)
-            };
-
-            var copyButton = new Button
-            {
-                Content = "📋 Копировать данные",
-                Margin = new Thickness(5),
-                Padding = new Thickness(10, 5, 10, 5)
-            };
-
-            var exportButton = new Button
-            {
-                Content = "💾 Экспорт в JSON",
-                Margin = new Thickness(5),
-                Padding = new Thickness(10, 5, 10, 5)
-            };
-
-            copyButton.Click += (s, e) => Clipboard.SetText(GetCombinedDataForNeuralNetwork());
-            exportButton.Click += (s, e) => ExportCombinedData();
-
-            buttonPanel.Children.Add(copyButton);
-            buttonPanel.Children.Add(exportButton);
-
-            // Основной layout
-            var mainGrid = new Grid();
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            tabControl.Items.Add(brainBitTab);
-            tabControl.Items.Add(actionsTab);
-            tabControl.Items.Add(combinedTab);
-
-            Grid.SetRow(tabControl, 0);
-            Grid.SetRow(buttonPanel, 1);
-
-            mainGrid.Children.Add(tabControl);
-            mainGrid.Children.Add(buttonPanel);
-
-            statsWindow.Content = mainGrid;
-            statsWindow.Show();
+                case TextBox textBox:
+                    value = textBox.Text?.Trim() ?? string.Empty;
+                    break;
+                    
+                case ComboBox comboBox:
+                    value = comboBox.SelectedItem?.ToString() ?? string.Empty;
+                    break;
+                    
+                case Slider slider:
+                    value = slider.Value.ToString("F0");
+                    break;
+            }
+            
+            data[element.Key] = value;
         }
+        
+        // Добавляем дату заполнения
+        data["questionnaire_date"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        data["questionnaire_timestamp"] = DateTime.Now.Ticks;
+    }
+    
+    return data;
+}
+
+private string GetAllDataWithQuestionnaireJson(StackPanel questionnairePanel)
+{
+    var questionnaireData = GetQuestionnaireData(questionnairePanel);
+    
+    // Создаем полный объект данных
+    var allData = new
+    {
+        Metadata = new
+        {
+            GeneratedAt = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+            Application = "EmotionAnalyzer",
+            Version = "1.0.0"
+        },
+        
+        VideoInfo = new
+        {
+            FileName = Path.GetFileName(_currentVideoPath),
+            FilePath = _currentVideoPath,
+            Duration = _mediaPlayer?.NaturalDuration.TimeSpan.TotalSeconds ?? 0,
+            Format = VideoFormat.Text,
+            Quality = VideoQuality.Text,
+            Size = VideoSize.Text,
+            Title = VideoTitle.Text
+        },
+        
+        UserQuestionnaire = questionnaireData,
+        
+        BrainBitData = new
+        {
+            TotalSamples = _brainBitData.Count,
+            Duration = _brainBitData.Count > 0 ? 
+                (_brainBitData.Last().Timestamp - _brainBitData.First().Timestamp).TotalSeconds : 0,
+            Samples = _brainBitData.Select(d => new
+            {
+                d.Timestamp,
+                VideoTimeSeconds = d.VideoTime.TotalSeconds,
+                d.InstAttention,
+                d.InstRelaxation,
+                d.RelAttention,
+                d.RelRelaxation,
+                d.Alpha,
+                d.Beta,
+                d.Gamma,
+                d.Theta,
+                d.Delta
+            }).ToList(),
+            
+            Statistics = new
+            {
+                AverageAttention = _brainBitData.Count > 0 ? _brainBitData.Average(d => d.InstAttention) : 0,
+                AverageRelaxation = _brainBitData.Count > 0 ? _brainBitData.Average(d => d.InstRelaxation) : 0,
+                MaxAttention = _brainBitData.Count > 0 ? _brainBitData.Max(d => d.InstAttention) : 0,
+                MinAttention = _brainBitData.Count > 0 ? _brainBitData.Min(d => d.InstAttention) : 0,
+                AttentionStdDev = _brainBitData.Count > 0 ? 
+                    Math.Sqrt(_brainBitData.Average(d => Math.Pow(d.InstAttention - _brainBitData.Average(x => x.InstAttention), 2))) : 0
+            }
+        },
+        
+        UserActions = new
+        {
+            TotalActions = _userActions.Count,
+            Actions = _userActions.Select(a => new
+            {
+                a.Timestamp,
+                a.ActionType,
+                VideoPositionSeconds = a.VideoPosition.TotalSeconds,
+                AdditionalData = a.AdditionalData?.ToString()
+            }).ToList(),
+            
+            Statistics = new
+            {
+                PlayCount = _userActions.Count(a => a.ActionType.Contains("play")),
+                PauseCount = _userActions.Count(a => a.ActionType.Contains("pause")),
+                RewindCount = _userActions.Count(a => a.ActionType.Contains("rewind")),
+                ForwardCount = _userActions.Count(a => a.ActionType.Contains("forward")),
+                SessionDuration = _userActions.Count > 0 ? 
+                    (_userActions.Last().Timestamp - _userActions.First().Timestamp).TotalMinutes : 0
+            }
+        },
+        
+        SessionInfo = new
+        {
+            StartTime = _sessionStartTime,
+            EndTime = DateTime.Now,
+            DurationMinutes = (DateTime.Now - _sessionStartTime).TotalMinutes,
+            VideoStartTime = _userActions.FirstOrDefault(a => a.ActionType.Contains("play"))?.Timestamp,
+            VideoEndTime = _userActions.FirstOrDefault(a => a.ActionType.Contains("end"))?.Timestamp
+        },
+        
+        RealTimeData = new
+        {
+            AttentionPoints = RealTimeDataManager.Instance.AttentionData.Count,
+            RelaxationPoints = RealTimeDataManager.Instance.RelaxationData.Count,
+            AlphaPoints = RealTimeDataManager.Instance.AlphaData.Count,
+            BetaPoints = RealTimeDataManager.Instance.BetaData.Count
+        }
+    };
+
+    var options = new JsonSerializerOptions
+    {
+        WriteIndented = true,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
+    return JsonSerializer.Serialize(allData, options);
+}
+
+private void ExportAllDataWithQuestionnaire(StackPanel questionnairePanel)
+{
+    try
+    {
+        var saveDialog = new SaveFileDialog
+        {
+            Filter = "JSON файлы (*.json)|*.json|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*",
+            FileName = $"emotion_analysis_full_{DateTime.Now:yyyyMMdd_HHmmss}",
+            Title = "Экспорт всех данных с анкетой",
+            DefaultExt = ".json",
+            AddExtension = true
+        };
+
+        if (saveDialog.ShowDialog() == true)
+        {
+            // Проверяем заполнение обязательных полей
+            var questionnaireData = GetQuestionnaireData(questionnairePanel);
+            
+            // Можно добавить проверку обязательных полей
+            if (string.IsNullOrEmpty(questionnaireData["name"]?.ToString()) ||
+                string.IsNullOrEmpty(questionnaireData["age"]?.ToString()))
+            {
+                var result = MessageBox.Show(
+                    "Не все обязательные поля анкеты заполнены. Хотите продолжить экспорт?",
+                    "Внимание",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+                
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            // Получаем все данные в JSON
+            string jsonData = GetAllDataWithQuestionnaireJson(questionnairePanel);
+            
+            // Сохраняем в файл
+            File.WriteAllText(saveDialog.FileName, jsonData);
+            
+            // Также создаем CSV версию для удобства
+            string csvPath = Path.ChangeExtension(saveDialog.FileName, ".csv");
+            SaveAllDataToCsv(csvPath, questionnaireData);
+            
+            // Показываем сообщение об успехе
+            var message = $"Данные успешно экспортированы!\n\n" +
+                         $"JSON файл: {saveDialog.FileName}\n" +
+                         $"CSV файл: {csvPath}\n\n" +
+                         $"Всего данных:\n" +
+                         $"• BrainBit: {_brainBitData.Count} записей\n" +
+                         $"• Действия: {_userActions.Count} записей\n" +
+                         $"• Анкета: {questionnaireData.Count} полей";
+            
+            MessageBox.Show(message, 
+                "Экспорт завершен", 
+                MessageBoxButton.OK, 
+                MessageBoxImage.Information);
+            
+            // Также копируем JSON в буфер обмена
+            Clipboard.SetText(jsonData);
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Ошибка при экспорте: {ex.Message}\n\n{ex.StackTrace}", 
+            "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+}
+
+private void SaveAllDataToCsv(string filePath, Dictionary<string, object> questionnaireData)
+{
+    try
+    {
+        var sb = new StringBuilder();
+        
+        // Заголовок CSV
+        sb.AppendLine("=== ДАННЫЕ АНАЛИЗА ЭМОЦИЙ ===");
+        sb.AppendLine($"Дата экспорта: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        sb.AppendLine($"Видео: {Path.GetFileName(_currentVideoPath)}");
+        sb.AppendLine($"Длительность сессии: {(DateTime.Now - _sessionStartTime).TotalMinutes:F1} мин");
+        sb.AppendLine();
+        
+        // Раздел анкеты
+        sb.AppendLine("=== АНКЕТА ПОЛЬЗОВАТЕЛЯ ===");
+        foreach (var item in questionnaireData)
+        {
+            sb.AppendLine($"{item.Key}: {item.Value}");
+        }
+        sb.AppendLine();
+        
+        // Раздел статистики BrainBit
+        if (_brainBitData.Count > 0)
+        {
+            sb.AppendLine("=== СТАТИСТИКА BRAINBIT ===");
+            sb.AppendLine($"Всего записей: {_brainBitData.Count}");
+            sb.AppendLine($"Период: {_brainBitData.First().Timestamp:HH:mm:ss} - {_brainBitData.Last().Timestamp:HH:mm:ss}");
+            sb.AppendLine($"Среднее внимание: {_brainBitData.Average(d => d.InstAttention):F2}");
+            sb.AppendLine($"Среднее расслабление: {_brainBitData.Average(d => d.InstRelaxation):F2}");
+            sb.AppendLine($"Макс. внимание: {_brainBitData.Max(d => d.InstAttention):F2}");
+            sb.AppendLine($"Мин. внимание: {_brainBitData.Min(d => d.InstAttention):F2}");
+            sb.AppendLine();
+            
+            // Таблица с данными
+            sb.AppendLine("=== ДАННЫЕ BRAINBIT (первые 10 записей) ===");
+            sb.AppendLine("Время;Время видео;Внимание;Расслабление;Альфа;Бета;Гамма;Тета;Дельта");
+            
+            foreach (var data in _brainBitData.Take(10))
+            {
+                sb.AppendLine($"{data.Timestamp:HH:mm:ss};" +
+                             $"{data.VideoTime:mm\\:ss};" +
+                             $"{data.InstAttention:F2};" +
+                             $"{data.InstRelaxation:F2};" +
+                             $"{data.Alpha:F2};" +
+                             $"{data.Beta:F2};" +
+                             $"{data.Gamma:F2};" +
+                             $"{data.Theta:F2};" +
+                             $"{data.Delta:F2}");
+            }
+        }
+        sb.AppendLine();
+        
+        // Раздел действий пользователя
+        if (_userActions.Count > 0)
+        {
+            sb.AppendLine("=== ДЕЙСТВИЯ ПОЛЬЗОВАТЕЛЯ ===");
+            sb.AppendLine($"Всего действий: {_userActions.Count}");
+            sb.AppendLine($"Воспроизведение: {_userActions.Count(a => a.ActionType.Contains("play"))}");
+            sb.AppendLine($"Пауза: {_userActions.Count(a => a.ActionType.Contains("pause"))}");
+            sb.AppendLine($"Перемотка: {_userActions.Count(a => a.ActionType.Contains("rewind") || a.ActionType.Contains("forward"))}");
+            sb.AppendLine();
+            
+            sb.AppendLine("=== ХРОНОЛОГИЯ ДЕЙСТВИЙ ===");
+            sb.AppendLine("Время;Тип действия;Позиция видео");
+            
+            foreach (var action in _userActions)
+            {
+                sb.AppendLine($"{action.Timestamp:HH:mm:ss};{action.ActionType};{action.VideoPosition:mm\\:ss}");
+            }
+        }
+        
+        File.WriteAllText(filePath, sb.ToString(), Encoding.UTF8);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка сохранения CSV: {ex.Message}");
+    }
+}
 
         private void UpdateBrainBitStatisticsTextBox(TextBox textBox)
         {
