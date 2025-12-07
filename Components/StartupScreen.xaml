@@ -1,7 +1,8 @@
 <UserControl x:Class="EmotionAnalyzer.Components.StartupScreen"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:EmotionAnalyzer.Components.WindowControls">
+             xmlns:controls="clr-namespace:EmotionAnalyzer.Components.WindowControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     
     <Grid Background="#FFFFFF">
         <!-- Основной контейнер с пунктирной границей -->
@@ -16,6 +17,7 @@
                 
                 <Grid SnapsToDevicePixels="True"
           UseLayoutRounding="True">
+                    
                     <!-- Основной интерфейс (видим по умолчанию) -->
                     <StackPanel x:Name="MainPanel"
                                 HorizontalAlignment="Center" 
@@ -23,22 +25,22 @@
                                 Visibility="Visible">
                         
                         <!-- Иконка -->
-                       <Grid Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,30">
-                    <!-- Фоновая картинка -->
-    <!-- Фоновая картинка -->
-    <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Rectangle21.svg" 
-           Width="80" 
-           Height="80"
-           Stretch="Uniform"/>
-    
-    <!-- Поверхностная картинка -->
-    <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Group2612.svg" 
-           Width="45" 
-           Height="45"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           Stretch="Uniform"/>
-                </Grid>
+                        <Grid Width="80" Height="80" HorizontalAlignment="Center" Margin="0,0,0,30">
+                            <!-- Фоновая картинка -->
+                            <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Rectangle21.svg" 
+                                   Width="80" 
+                                   Height="80"
+                                   Stretch="Uniform"/>
+                            
+                            <!-- Поверхностная картинка -->
+                            <Image Source="pack://application:,,,/ScenaryBuilder;component/Components/Images/Group2612.svg" 
+                                   Width="45" 
+                                   Height="45"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Stretch="Uniform"/>
+                        </Grid>
+                        
                         <!-- Заголовок -->
                         <TextBlock Text="Перетащите видео сюда или нажмите кнопку ниже, "
                                    FontSize="18"
@@ -56,21 +58,130 @@
                                    Margin="0,0,0,20"
                                    Foreground="#191919"/>
                         
-                        <!-- Описание -->
-                        <TextBlock Text="Убедитесь то что видео формата: MP4, MOV"
-                                   FontSize="18"
-                                   Foreground="#888888"
-                                   HorizontalAlignment="Center"
-                                   TextAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   Margin="0,0,0,40"/>
+                        <!-- Блок для загрузки по ссылке -->
+                        <Border BorderBrush="#E0E0E0" 
+                                BorderThickness="1" 
+                                CornerRadius="12"
+                                Background="#F8F9FA"
+                                Margin="0,0,0,25"
+                                Padding="18">
+                            <StackPanel>
+                                <TextBlock Text="Или загрузите по ссылке:"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="#191919"
+                                           Margin="0,0,0,12"/>
+                                
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBox x:Name="VideoUrlTextBox"
+                                             Grid.Column="0"
+                                             Height="38"
+                                             FontSize="14"
+                                             Padding="12,0"
+                                             VerticalContentAlignment="Center"
+                                             BorderBrush="#CCCCCC"
+                                             BorderThickness="1"
+                                             Background="White"
+                                             Foreground="#191919"
+                                             VerticalAlignment="Center">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                                                <Setter Property="BorderThickness" Value="1"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="#0066FF"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="True">
+                                                        <Setter Property="BorderBrush" Value="#0066FF"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
+                                    
+                                    <Button x:Name="DownloadFromUrlButton"
+                                            Grid.Column="1"
+                                            Content="Скачать"
+                                            Height="38"
+                                            Width="95"
+                                            Margin="10,0,0,0"
+                                            Background="#0066FF"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Cursor="Hand"
+                                            Click="DownloadFromUrlButton_Click"
+                                            VerticalAlignment="Center">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                    CornerRadius="6"
+                                                                    Padding="15,0">
+                                                                <ContentPresenter HorizontalAlignment="Center" 
+                                                                                  VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Background" Value="#0066FF"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#0055DD"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Background" Value="#CCCCCC"/>
+                                                        <Setter Property="Foreground" Value="#888888"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                                
+                                <TextBlock Text="Поддерживаются: rutube.ru и vk.com/video"
+                                           FontSize="12"
+                                           Foreground="#888888"
+                                           Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Border>
                         
-                        <!-- Кнопка загрузки -->
+                        <!-- Разделитель -->
+                        <Grid Margin="0,0,0,25" Height="20">
+                            <Line X1="0" Y1="10" X2="100" Y2="10" 
+                                  Stroke="#E0E0E0" 
+                                  StrokeThickness="1"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"/>
+                            <TextBlock Text="ИЛИ"
+                                       Foreground="#888888"
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Background="#FFFFFF"
+                                       Padding="10,0"/>
+                            <Line X1="0" Y1="10" X2="100" Y2="10" 
+                                  Stroke="#E0E0E0" 
+                                  StrokeThickness="1"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"/>
+                        </Grid>
+                        
+                        <!-- Кнопка загрузки с компьютера -->
                         <Button x:Name="LoadButton"
-                                Content="📁 Загрузить видео"
-                                Width="280"
-                                Height="60"
-                                FontSize="20"
+                                Content="📁 Загрузить видео с компьютера"
+                                Width="320"
+                                Height="55"
+                                FontSize="18"
                                 Background="#EBEBEB"
                                 BorderBrush="#888888"
                                 HorizontalAlignment="Center"
@@ -85,7 +196,7 @@
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="1"
-                                                        CornerRadius="30"
+                                                        CornerRadius="27"
                                                         Padding="15,10">
                                                     <ContentPresenter HorizontalAlignment="Center" 
                                                                       VerticalAlignment="Center"/>
@@ -93,9 +204,13 @@
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Background" Value="#005A9E"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Setter Property="BorderBrush" Value="#005A9E"/>
                                                     </Trigger>
                                                     <Trigger Property="IsPressed" Value="True">
                                                         <Setter Property="Background" Value="#004A9E"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Setter Property="BorderBrush" Value="#004A9E"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -117,12 +232,12 @@
                     <StackPanel x:Name="LoadingPanel"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Width="280"
+                                Width="320"
                                 Visibility="Collapsed">
                         
-
-                        <!-- Сообщение о загрузке -->
-                        <TextBlock Text="Не выключайте приложение, видео грузится"
+                        <!-- Заголовок в зависимости от типа загрузки -->
+                        <TextBlock x:Name="LoadingTitleText"
+                                   Text="Не выключайте приложение, видео грузится"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    HorizontalAlignment="Center"
@@ -167,14 +282,14 @@
                             </ProgressBar>
                         </Grid>
                         
-                        <!-- Проценты загрузки НИЖЕ прогресс бара -->
+                        <!-- Проценты загрузки -->
                         <TextBlock x:Name="ProgressPercentageText"
                                    Text="0%"
                                    FontSize="14"
                                    FontWeight="Bold"
                                    Foreground="#191919"
                                    HorizontalAlignment="Center"
-                                   Margin="0,5,0,15"/> <!-- Отступ снизу 15px -->
+                                   Margin="0,5,0,15"/>
                         
                         <!-- Текущий статус -->
                         <TextBlock x:Name="StatusTextBlock"
@@ -184,14 +299,23 @@
                                    TextAlignment="Center"
                                    TextWrapping="Wrap"
                                    Foreground="#888888"
-                                   Margin="0,0,0,20"/>
+                                   Margin="0,0,0,10"/>
                         
+                        <!-- Дополнительный статус для загрузки по ссылке -->
+                        <TextBlock x:Name="DownloadStatusText"
+                                   Text=""
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   Foreground="#0066FF"
+                                   Visibility="Collapsed"/>
                         
                     </StackPanel>
                 </Grid>
             </Border>
             
-            <!-- Пунктирная граница поверх фона - БОЛЬШИЕ ПУНКТИРЫ -->
+            <!-- Пунктирная граница поверх фона -->
             <Rectangle Stroke="#888888"
                        StrokeThickness="2"
                        StrokeDashArray="15 10" 

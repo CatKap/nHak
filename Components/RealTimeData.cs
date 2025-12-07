@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace EmotionAnalyzer.Components
 {
@@ -145,7 +146,100 @@ namespace EmotionAnalyzer.Components
             ThetaData.Clear();
             DeltaData.Clear();
         }
+        
+        // МЕТОД ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ В ВИДЕ СЛОВАРЯ
+        public Dictionary<string, object> GetDataAsDictionary()
+        {
+            return new Dictionary<string, object>
+            {
+                ["AttentionData"] = AttentionData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["RelaxationData"] = RelaxationData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["AlphaData"] = AlphaData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["BetaData"] = BetaData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["GammaData"] = GammaData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["ThetaData"] = ThetaData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["DeltaData"] = DeltaData.Select(d => new
+                {
+                    d.Timestamp,
+                    VideoTime = d.VideoTime.TotalSeconds,
+                    d.Value
+                }).ToList(),
+                
+                ["Statistics"] = new
+                {
+                    Attention = new
+                    {
+                        Average = GetAverageAttention(),
+                        Max = GetMaxAttention(),
+                        Min = GetMinAttention(),
+                        Count = AttentionData.Count
+                    },
+                    Relaxation = new
+                    {
+                        Average = GetAverageRelaxation(),
+                        Max = GetMaxRelaxation(),
+                        Min = GetMinRelaxation(),
+                        Count = RelaxationData.Count
+                    }
+                }
+            };
+        }
+        
+        // МЕТОД ДЛЯ СОЗДАНИЯ КОМПАКТНОГО JSON (без форматирования)
+        public string GetCompactJson()
+        {
+           
 
+            var compactData = new
+            {
+                A = AttentionData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                R = RelaxationData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                α = AlphaData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                β = BetaData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                γ = GammaData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                θ = ThetaData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList(),
+                δ = DeltaData.Select(d => new[] { d.Timestamp.Ticks, d.VideoTime.Ticks, d.Value }).ToList()
+            };
+
+            return JsonSerializer.Serialize(compactData);
+        }
+    
         // Методы для получения статистики
         public double GetAverageAttention() => AttentionData.Count > 0 ? AttentionData.Average(d => d.Value) : 0;
         public double GetMaxAttention() => AttentionData.Count > 0 ? AttentionData.Max(d => d.Value) : 0;

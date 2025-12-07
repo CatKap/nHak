@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using Microsoft.Win32;
 using System.Windows.Input;
 using System.Text;
@@ -14,6 +15,7 @@ using System.Windows.Threading;
 
 namespace EmotionAnalyzer.Components
 {
+
     public partial class VideoInfoPanel : UserControl
     {
         private string uploadUrl = "https://rewrd.ru/files/upload";
@@ -49,6 +51,23 @@ namespace EmotionAnalyzer.Components
                 return $"{Timestamp:HH:mm:ss} - {ActionType} at {VideoPosition:mm\\:ss}";
             }
         }
+        
+        public void RunAndForget(Func<Task> asyncAction)
+        {
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await asyncAction().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    // Log error appropriately for your application
+                    Console.WriteLine($"Background task failed: {ex.Message}");
+                }
+            });
+        }
+        
 
         public VideoInfoPanel()
         {
@@ -195,14 +214,11 @@ namespace EmotionAnalyzer.Components
                 _currentVideoName = $"{DateTime.Now}_{Path.GetFileName(_currentVideoPath)}";
 
                 var fileUploadUrl = $"{uploadUrl}/{_currentVideoName}";
-
                 using (var client = new HttpClient())
                 using (var fileStream = File.OpenRead(_currentVideoPath))
                 {
                     var content = new StreamContent(fileStream);
-                    var response = await client.PutAsync(uploadUrl, content);
-
-                    Console.WriteLine($"Status: {response.StatusCode}");
+                    RunAndForget(() => client.PutAsync(uploadUrl, content));
                 }
                 
                 // Сбрасываем статистику для нового видео
@@ -269,6 +285,25 @@ namespace EmotionAnalyzer.Components
             _brainBitData.Clear();
             LogAction("new_video_load", TimeSpan.Zero, "Загрузка нового видео");
         }
+        
+        public void SendReportToHelperPanel(string neuralNetworkReport)
+{
+    // Получаем ссылку на MainWindow
+    var mainWindow = Application.Current.MainWindow as MainWindow;
+    if (mainWindow == null || mainWindow.HelperPanelComponent == null)
+    {
+        MessageBox.Show("HelperPanel не найден", "Ошибка", 
+            MessageBoxButton.OK, MessageBoxImage.Warning);
+        return;
+    }
+    
+    // Отправляем отчет в HelperPanel
+    mainWindow.HelperPanelComponent.SetNeuralNetworkReport(neuralNetworkReport);
+    
+    // Показываем уведомление
+    MessageBox.Show("Отчет нейронной сети отправлен в панель аналитики!", 
+        "Отчет готов", MessageBoxButton.OK, MessageBoxImage.Information);
+}
         
         private void StartVideoAfterBrainBitReady()
         {

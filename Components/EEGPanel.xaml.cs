@@ -158,7 +158,6 @@ namespace EmotionAnalyzer.Components
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка обновления данных EEG: {ex.Message}");
                 }
             });
         }

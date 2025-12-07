@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "Lt5l9IlA40U=",
+  "dgSpecHash": "8bVb1MqhNXk=",
   "success": true,
   "projectFilePath": "C:\\Users\\Lenovo\\Downloads\\nHak-final\\nHak-final\\ScenaryBuilder.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\emstartifacts\\1.0.11\\emstartifacts.1.0.11.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\livecharts\\0.9.7\\livecharts.0.9.7.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\livecharts.wpf\\0.9.7\\livecharts.wpf.0.9.7.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\markdig\\0.44.0\\markdig.0.44.0.nupkg.sha512",
+    "C:\\Users\\Lenovo\\.nuget\\packages\\markdig.wpf\\0.5.0.1\\markdig.wpf.0.5.0.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\xneurosdk\\1.0.9.4\\xneurosdk.1.0.9.4.nupkg.sha512"
   ],
   "logs": [

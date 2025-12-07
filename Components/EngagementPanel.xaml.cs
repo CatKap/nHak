@@ -282,48 +282,6 @@ namespace EmotionAnalyzer.Components
             EngagementStatusText.Foreground = new SolidColorBrush(color);
         }
 
-        // Обработчики кнопок временных интервалов
-        private void TimeIntervalFull_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateActiveTimeInterval(TimeIntervalFull);
-            SetTimeRange(0);
-            BetaChart.AxisY[0].MinValue = 0;
-            BetaChart.AxisY[0].MaxValue = 100;
-            AlphaChart.AxisY[0].MinValue = 0;
-            AlphaChart.AxisY[0].MaxValue = 100;
-        }
-
-        private void TimeInterval1Min_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateActiveTimeInterval(TimeInterval1Min);
-            SetTimeRange(60);
-        }
-
-        private void TimeInterval5Min_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateActiveTimeInterval(TimeInterval5Min);
-            SetTimeRange(300);
-        }
-
-        private void TimeInterval10Min_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateActiveTimeInterval(TimeInterval10Min);
-            SetTimeRange(600);
-        }
-
-        private void UpdateActiveTimeInterval(Button activeButton)
-        {
-            var buttons = new[] { TimeIntervalFull, TimeInterval1Min, TimeInterval5Min, TimeInterval10Min };
-            foreach (var button in buttons)
-            {
-                button.Background = new SolidColorBrush(Color.FromRgb(235, 235, 235));
-                button.Foreground = new SolidColorBrush(Color.FromRgb(102, 102, 102));
-            }
-            
-            activeButton.Background = new SolidColorBrush(Color.FromRgb(30, 144, 255));
-            activeButton.Foreground = Brushes.White;
-        }
-
         private void SetTimeRange(int seconds)
         {
             if (seconds == 0)

@@ -6,6 +6,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using EmotionAnalyzer.Components;
+using ScenaryBuilder.Components;
+
 namespace  CsToPy
 {
 
@@ -31,13 +35,16 @@ namespace  CsToPy
      
 
       private void processData(MessageData response){
-        Console.WriteLine($"Received JSON: ID={response.Id}, Message={response.Message}");
+        //Console.WriteLine($"Received JSON: ID={response.Id}, Message={response.Message}");
+        
+        Console.WriteLine(response.Message);
+        HelperPanel.Instance.setMarkdown(response.Message);
       }
     
       public AiAnalytics(){
 
           // Get the path to the Python script
-          string pythonScriptPath = Path.Combine(Directory.GetCurrentDirectory(), "agent.py");
+          string pythonScriptPath = Path.Combine("C:\\Users\\Lenovo\\Downloads\\nHak-final\\nHak-final\\", "agent.py");
           
           if (!File.Exists(pythonScriptPath))
           {
@@ -50,7 +57,7 @@ namespace  CsToPy
               StartInfo = new ProcessStartInfo
               {
                   FileName = "python3",
-                  Arguments = $"\"{pythonScriptPath}\" json",
+                  Arguments = $"-u \"{pythonScriptPath}\" json",
                   UseShellExecute = false,
                   RedirectStandardInput = true,
                   RedirectStandardOutput = true,
@@ -63,22 +70,13 @@ namespace  CsToPy
 
           process.OutputDataReceived += (sender, e) =>
           {
-              if (!string.IsNullOrEmpty(e.Data) && e.Data.StartsWith("{"))
+              if (!string.IsNullOrEmpty(e.Data) && e.Data.Trim().StartsWith("{"))
               {
-                  try
-                  {
-                      var response = JsonSerializer.Deserialize<MessageData>(e.Data);
-                      processData(response);
-                  }
-                  catch
-                  {
-                      if (!string.IsNullOrEmpty(e.Data)){
-                          errorMsg = e.Data;
-                          error = true; 
-                          Console.WriteLine($"[Python]: {e.Data}");
-                      }
-
-                  }
+                 
+                  var response = JsonSerializer.Deserialize<MessageData>(e.Data);
+                  processData(response);
+                  Console.WriteLine($"[Python]: {e.Data}");
+                    
               }
               else if (!string.IsNullOrEmpty(e.Data))
               {

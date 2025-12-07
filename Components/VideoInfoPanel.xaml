@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
             
             <!-- Заголовок -->
-            <TextBlock Text="Сведение о видео"
+            <TextBlock Text="Сведения о видео"
                        FontSize="18"
                        FontWeight="Bold"
                        Foreground="#000000"

@@ -10,6 +10,8 @@
         "dependencies": {
           "EmStArtifacts": "1.0.11",
           "LiveCharts.Wpf": "0.9.7",
+          "Markdig": "0.44.0",
+          "Markdig.Wpf": "0.5.0.1",
           "XNeuroSDK": "1.0.9.4"
         },
         "runtime": {
@@ -52,6 +54,25 @@
           "lib/net45/LiveCharts.Wpf.dll": {
             "assemblyVersion": "0.9.7.0",
             "fileVersion": "0.9.7.0"
+          }
+        }
+      },
+      "Markdig/0.44.0": {
+        "runtime": {
+          "lib/net9.0/Markdig.dll": {
+            "assemblyVersion": "0.44.0.0",
+            "fileVersion": "0.44.0.0"
+          }
+        }
+      },
+      "Markdig.Wpf/0.5.0.1": {
+        "dependencies": {
+          "Markdig": "0.44.0"
+        },
+        "runtime": {
+          "lib/net5.0-windows7.0/Markdig.Wpf.dll": {
+            "assemblyVersion": "0.5.0.1",
+            "fileVersion": "0.5.0.1"
           }
         }
       },
@@ -103,6 +124,20 @@
       "sha512": "sha512-lv6YZoK0B4yWykMq5b9grZXtIbTj+OWu4sVN9GDpdgV6zffu64m4d5CW8KSjfSl9rB8VU649x1NZvhoU67hCDg==",
       "path": "livecharts.wpf/0.9.7",
       "hashPath": "livecharts.wpf.0.9.7.nupkg.sha512"
+    },
+    "Markdig/0.44.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-X+CYMjcUnh/yO24wOSQxVFLiGqWrrtXJ5M7toHiM1Zk4Fg9UMLN5fkaq6FSOWH+mIprsHHgDMlq3MJhmrXalhg==",
+      "path": "markdig/0.44.0",
+      "hashPath": "markdig.0.44.0.nupkg.sha512"
+    },
+    "Markdig.Wpf/0.5.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lQRxu90ZqCATHTvd25yR/MxXABYA+Xcp7tmKW5jReTIgegB+AcU0+cd1GqdpM5k2KRVaD8BkBYQFdDw0lquT4w==",
+      "path": "markdig.wpf/0.5.0.1",
+      "hashPath": "markdig.wpf.0.5.0.1.nupkg.sha512"
     },
     "XNeuroSDK/1.0.9.4": {
       "type": "package",

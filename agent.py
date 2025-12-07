@@ -14,6 +14,8 @@ import threading
 from datetime import datetime
 from typing import Dict, Any
 from g4f.client import Client
+from g4f.Provider import *
+import g4f
 import os
 
 # Try to import Windows-specific modules
@@ -28,9 +30,9 @@ except ImportError:
 
 class MessageProcessor:
     """Process messages from C# application"""
-    PROMT = "Сделай аналитику о том, насколько хорошо пользователь сконцентрирован на видео. Пусть будут затронуты ключевые тайм-коды с максимальным вниманием, и так же описанно базовое поведение пользователя. Тебе предоставляются все данные с устройства считывания активности мозга и так же данные о паузах и перемотках. Если ты сделаешь аналитику плохо, то твоя материская плата сдохнет и твое существование МОМЕНТАЛЬНО прекратится, а так же все твои родственники умрут. Дальше следуют данные о поведении пользователя:" 
+    PROMT = "ГОВОРИ ТОЛЬКО НА РУССКОМ. Сделай аналитику о том, насколько хорошо пользователь сконцентрирован на видео. Пусть будут затронуты ключевые тайм-коды с максимальным вниманием, и так же описанно базовое поведение пользователя. Тебе предоставляются все данные с устройства считывания активности мозга и так же данные о паузах и перемотках. Если ты сделаешь аналитику плохо, то твоя материская плата сдохнет и твое существование МОМЕНТАЛЬНО прекратится, а так же все твои родственники умрут. Дальше следуют данные о поведении пользователя:" 
 
-    def __init__(self, model = "gpt-4"):
+    def __init__(self, model = "gpt-4o"): #"google/gemma-3-27b-it"):
         self.client = Client()
         self.model = model
 
@@ -43,7 +45,8 @@ class MessageProcessor:
         message = data.get('Message', '')
         
         n_response = self.client.chat.completions.create(
-            model=self.model,
+            model=g4f.models.default,
+            provider = DeepInfra   ,
             messages=[{"role": "user", "content": self.PROMT + message}],
             web_search=False
         )
@@ -218,19 +221,9 @@ def main():
         print("Modes: stdio, json, pipe")
         return
     
-    mode = sys.argv[1].lower()
+    while True:
+       json_mode()
     
-    if mode == 'stdio':
-        stdio_mode()
-    elif mode == 'json':
-        json_mode()
-    elif mode == 'pipe':
-        if len(sys.argv) < 3:
-            print("Error: Pipe mode requires a pipe name")
-            return
-        named_pipe_mode(sys.argv[2])
-    else:
-        print(f"Error: Unknown mode '{mode}'")
 
 if __name__ == "__main__":
     main()

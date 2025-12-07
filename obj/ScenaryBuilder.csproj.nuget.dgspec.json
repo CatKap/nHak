@@ -52,6 +52,14 @@
               "target": "Package",
               "version": "[0.9.7, )"
             },
+            "Markdig": {
+              "target": "Package",
+              "version": "[0.44.0, )"
+            },
+            "Markdig.Wpf": {
+              "target": "Package",
+              "version": "[0.5.0.1, )"
+            },
             "XNeuroSDK": {
               "target": "Package",
               "version": "[1.0.9.4, )"

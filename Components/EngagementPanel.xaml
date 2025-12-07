@@ -20,7 +20,7 @@
             
             <!-- Заголовок и статус -->
             <Grid Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock Text="📊 Анализ ЭЭГ BrainBit"
+                <TextBlock Text="📊 Анализ"
                            FontSize="18"
                            FontWeight="Bold"
                            Foreground="#2C3E50"
@@ -50,13 +50,6 @@
                         </StackPanel>
                     </Border>
                     
-                    <Border Background="#E8F4FD" CornerRadius="4" Padding="8,4">
-                        <TextBlock x:Name="EngagementStatusText"
-                                   Text="Ожидание данных..."
-                                   FontSize="11"
-                                   FontWeight="SemiBold"
-                                   Foreground="#2980B9"/>
-                    </Border>
                 </StackPanel>
             </Grid>
             
@@ -69,7 +62,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
@@ -86,55 +79,20 @@
                             <Rectangle Width="16" Height="3" Fill="#4ECDC4" VerticalAlignment="Center" Margin="0,0,4,0"/>
                             <TextBlock Text="Альфа (α): расслабление" 
                                        FontSize="11" 
+                                       Margin="0,0,10,0"
                                        Foreground="#666666"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
+                        <Border Background="#E8F4FD" CornerRadius="4" Padding="8,4">
+                            <TextBlock x:Name="EngagementStatusText"
+                                       Text="Ожидание данных..."
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="#2980B9"/>
+                        </Border>
                     </StackPanel>
-                    
-                    <!-- Переключатель временных интервалов -->
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <Button x:Name="TimeIntervalFull"
-                                Content="Все"
-                                Background="#1E90FF"
-                                Foreground="#FFFFFF"
-                                BorderThickness="0"
-                                Padding="12,4"
-                                FontSize="11"
-                                FontWeight="SemiBold"
-                                Margin="0,0,4,0"
-                                Cursor="Hand"
-                                Click="TimeIntervalFull_Click"/>
-                        <Button x:Name="TimeInterval1Min"
-                                Content="1 мин"
-                                Background="#EBEBEB"
-                                Foreground="#666666"
-                                BorderThickness="0"
-                                Padding="12,4"
-                                FontSize="11"
-                                Margin="0,0,4,0"
-                                Cursor="Hand"
-                                Click="TimeInterval1Min_Click"/>
-                        <Button x:Name="TimeInterval5Min"
-                                Content="5 мин"
-                                Background="#EBEBEB"
-                                Foreground="#666666"
-                                BorderThickness="0"
-                                Padding="12,4"
-                                FontSize="11"
-                                Margin="0,0,4,0"
-                                Cursor="Hand"
-                                Click="TimeInterval5Min_Click"/>
-                        <Button x:Name="TimeInterval10Min"
-                                Content="10 мин"
-                                Background="#EBEBEB"
-                                Foreground="#666666"
-                                BorderThickness="0"
-                                Padding="12,4"
-                                FontSize="11"
-                                Cursor="Hand"
-                                Click="TimeInterval10Min_Click"/>
-                    </StackPanel>
-                </Grid>
+                        
+                    </Grid>
             </Border>
             
             <!-- График бета-волн -->
