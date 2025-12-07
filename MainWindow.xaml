@@ -35,9 +35,10 @@
             <!-- Центральная панель - Вовлечённость и ЭЭГ -->
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="24"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <!-- Вовлечённость -->
@@ -46,7 +47,21 @@
                 
                 <!-- ЭЭГ -->
                 <components:EEGPanel x:Name="EEGPanelComponent"
-                                     Grid.Row="2"/>
+                                     Margin="0,0,0,18"
+                                     Grid.Row="1"/>
+                
+                <Button x:Name="OpenGropeResultsButton"
+                        FontWeight="Bold"
+                        Content="Проверка BrainBit"
+                        Background="#EBEBEB"
+                        Foreground="#333333"
+                        BorderThickness="0"
+                        Height="48"
+                        FontSize="14"
+                        VerticalAlignment="Bottom"
+                        Cursor="Hand"
+                        Click="StartDiagnostic"
+                        Grid.Row="2"/>
             </Grid>
             
             <!-- Правая панель - Видео информация -->

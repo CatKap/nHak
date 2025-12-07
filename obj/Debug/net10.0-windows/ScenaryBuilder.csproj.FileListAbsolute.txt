@@ -189,3 +189,5 @@ C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\Compon
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\Components\NeuroStats.baml
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\bin\Debug\net10.0-windows\Markdig.dll
 C:\Users\Lenovo\Downloads\nHak-final\nHak-final\bin\Debug\net10.0-windows\Markdig.Wpf.dll
+C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\Components\Instruction.g.cs
+C:\Users\Lenovo\Downloads\nHak-final\nHak-final\obj\Debug\net10.0-windows\Components\Instruction.baml

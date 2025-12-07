@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using EmotionAnalyzer.Components;
 using System.Windows.Media;
+using WpfApp2;
 
 namespace EmotionAnalyzer
 {
     public partial class MainWindow : Window
     {
         private VideoInfoPanel? _videoInfoPanel;
-        
+        private static bool _isDiagnosticWindowOpen = false;
+        private static Instruction _diagnosticWindowInstance;
         public MainWindow()
         {
             InitializeComponent();
@@ -23,6 +26,30 @@ namespace EmotionAnalyzer
             {
                 StartupScreenComponent.LoadingComplete += OnLoadingComplete;
             }
+        }
+
+        private void StartDiagnostic(object sender, RoutedEventArgs e)
+        {
+            // Если окно уже открыто, активируем его
+            if (_isDiagnosticWindowOpen && _diagnosticWindowInstance != null)
+            {
+                _diagnosticWindowInstance.Activate();
+                _diagnosticWindowInstance.Focus();
+                return;
+            }
+    
+            // Создаем новое окно
+            _diagnosticWindowInstance = new Instruction();
+            _isDiagnosticWindowOpen = true;
+    
+            // Подписываемся на событие закрытия окна
+            _diagnosticWindowInstance.Closed += (s, args) =>
+            {
+                _isDiagnosticWindowOpen = false;
+                _diagnosticWindowInstance = null;
+            };
+    
+            _diagnosticWindowInstance.Show();
         }
         
         private void FindVideoInfoPanel()

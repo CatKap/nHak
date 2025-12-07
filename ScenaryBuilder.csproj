@@ -10,6 +10,8 @@
     <ItemGroup>
       <Resource Include="Components\Images\Group2612.svg" />
       <Resource Include="Components\Images\Rectangle21.svg" />
+      <None Remove="Components\Images\brain.png" />
+      <Resource Include="Components\Images\brain.png" />
       <!-- Добавьте другие картинки -->
     </ItemGroup>
 

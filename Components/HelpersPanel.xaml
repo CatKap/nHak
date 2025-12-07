@@ -67,7 +67,7 @@
                     FontSize="14"
                     Margin="0,24,0,0"
                     Cursor="Hand"
-                    Click="OpenFullResultsButton_Click"
+                    Click="OpenGroupResultsButton_Click"
                     Grid.Row="3"/>
         </Grid>
     </Border>

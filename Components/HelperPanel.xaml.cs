@@ -5,6 +5,12 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Documents;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.Win32;
 using CsToPy;
 using ScenaryBuilder.Components;
 
@@ -16,7 +22,7 @@ namespace EmotionAnalyzer.Components
         public static HelperPanel Instance => _instance ??= new HelperPanel();
         private AiAnalytics anal;
         public string Markdown;
-        public string  DocumentStyle;
+        public string DocumentStyle;
         
         // Свойство для хранения текущего отчета
         private string _currentReport = string.Empty;
@@ -24,10 +30,342 @@ namespace EmotionAnalyzer.Components
         public HelperPanel()
         {
             InitializeComponent();
-            anal = new AiAnalytics();
+            
+            // Инициализация AI асинхронно, чтобы не блокировать UI
+            Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        anal = new AiAnalytics();
+                        Console.WriteLine("AI Analytics инициализирован");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка инициализации AI: {ex.Message}");
+                    }
+                });
+            });
+            
             _instance = this; // Устанавливаем инстанс
             MarkdownViewer.Markdown = "Сначала соберите статистику";
-
+        }
+        
+        private async void OpenGroupResultsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Console.WriteLine("Открытие диалога выбора файлов для группового анализа...");
+                
+                // Создаем диалог выбора файлов
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Выберите файлы для группового анализа",
+                    Multiselect = true,
+                    Filter = "JSON файлы (*.json)|*.json|Текстовые файлы (*.txt)|*.txt|Все файлы (*.*)|*.*",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                };
+                
+                // Показываем диалог
+                bool? result = openFileDialog.ShowDialog();
+                
+                if (result == true && openFileDialog.FileNames.Length > 0)
+                {
+                    Console.WriteLine($"Выбрано файлов: {openFileDialog.FileNames.Length}");
+                    
+                    // Показываем прогресс
+                    MessageBox.Show($"Выбрано {openFileDialog.FileNames.Length} файлов. Начинаю обработку...", 
+                        "Групповой анализ", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
+                    // Процессинг выбранных файлов
+                    await ProcessMultipleFiles(openFileDialog.FileNames);
+                }
+                else
+                {
+                    Console.WriteLine("Выбор файлов отменен");
+                    MessageBox.Show("Выбор файлов отменен.", "Информация", 
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при выборе файлов: {ex.Message}");
+                MessageBox.Show($"Ошибка при выборе файлов: {ex.Message}", 
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private async Task ProcessMultipleFiles(string[] filePaths)
+        {
+            try
+            {
+                // Проверяем, инициализирован ли AI
+                if (anal == null)
+                {
+                    MessageBox.Show("AI аналитика еще не готова. Подождите немного...", 
+                        "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                
+                StringBuilder combinedData = new StringBuilder();
+                combinedData.AppendLine("=== ГРУППОВОЙ АНАЛИЗ ===");
+                combinedData.AppendLine($"Количество файлов: {filePaths.Length}");
+                combinedData.AppendLine($"Дата анализа: {DateTime.Now:dd.MM.yyyy HH:mm:ss}");
+                combinedData.AppendLine("=".PadRight(50, '='));
+                combinedData.AppendLine();
+                
+                int processedFiles = 0;
+                
+                foreach (string filePath in filePaths)
+                {
+                    try
+                    {
+                        string fileName = Path.GetFileName(filePath);
+                        Console.WriteLine($"Обработка файла: {fileName}");
+                        
+                        // Читаем содержимое файла с указанием кодировки UTF-8
+                        string fileContent = await File.ReadAllTextAsync(filePath, Encoding.UTF8);
+                        
+                        // Преобразуем JSON в читаемый текст
+                        string cleanContent = ConvertJsonToReadableText(fileContent, fileName);
+                        
+                        // Добавляем информацию о файле
+                        combinedData.AppendLine($"\n--- ФАЙЛ: {fileName} ---");
+                        combinedData.AppendLine($"Размер: {new FileInfo(filePath).Length} байт");
+                        combinedData.AppendLine($"Изменен: {File.GetLastWriteTime(filePath):dd.MM.yyyy HH:mm}");
+                        combinedData.AppendLine($"Тип: {Path.GetExtension(filePath).ToUpper()}");
+                        combinedData.AppendLine("-".PadRight(40, '-'));
+                        
+                        // Добавляем очищенное содержимое
+                        combinedData.AppendLine(cleanContent);
+                        combinedData.AppendLine();
+                        
+                        processedFiles++;
+                        
+                        // Обновляем статус
+                        Dispatcher.Invoke(() =>
+                        {
+                            MarkdownViewer.Markdown = $"## Обработка файлов\n\n" +
+                                                     $"✅ Обработано: {processedFiles}/{filePaths.Length}\n" +
+                                                     $"📁 Текущий файл: {fileName}";
+                        });
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка обработки файла {filePath}: {ex.Message}");
+                        
+                        combinedData.AppendLine($"\n[ОШИБКА] при обработке файла {Path.GetFileName(filePath)}:");
+                        combinedData.AppendLine($"   {ex.Message}");
+                        combinedData.AppendLine();
+                    }
+                    
+                    // Небольшая задержка между файлами
+                    await Task.Delay(50);
+                }
+                
+                // Формируем финальный результат
+                combinedData.AppendLine("\n" + "=".PadRight(50, '='));
+                combinedData.AppendLine($"ИТОГО: Успешно обработано {processedFiles} из {filePaths.Length} файлов");
+                combinedData.AppendLine("=".PadRight(50, '='));
+                
+                // Подготавливаем данные для отправки
+                string combinedDataStr = combinedData.ToString();
+                
+                // Очищаем от не-ASCII символов перед отправкой
+                string cleanDataForAi = CleanForAi(combinedDataStr);
+                
+                Console.WriteLine($"Отправляем данные в ИИ (размер: {cleanDataForAi.Length} символов)");
+                
+                // Показываем подготовленные данные
+                Dispatcher.Invoke(() =>
+                {
+                    MarkdownViewer.Markdown = $"## Подготовка данных завершена\n\n" +
+                                             $"✅ Обработано файлов: {processedFiles}/{filePaths.Length}\n\n" +
+                                             $"📊 Общий размер данных: {cleanDataForAi.Length} символов\n\n" +
+                                             $"⏳ Отправляем данные на анализ ИИ...";
+                });
+                
+                // Отправляем в ИИ с таймаутом
+                var sendTask = anal.requestAnalytics(cleanDataForAi);
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30));
+                
+                var completedTask = await Task.WhenAny(sendTask, timeoutTask);
+                
+                if (completedTask == timeoutTask)
+                {
+                    throw new TimeoutException("Таймаут при отправке данных в ИИ");
+                }
+                
+                // Сохраняем объединенные данные для возможного экспорта
+                _currentReport = combinedDataStr;
+                
+                Console.WriteLine("Данные успешно отправлены в ИИ");
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Критическая ошибка при обработке файлов: {ex.Message}");
+                
+                Dispatcher.Invoke(() =>
+                {
+                    MarkdownViewer.Markdown = $"## ❌ Ошибка при обработке файлов\n\n" +
+                                             $"Произошла ошибка: {ex.Message}";
+                });
+                
+                MessageBox.Show($"Ошибка при обработке файлов: {ex.Message}", 
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        
+        private string ConvertJsonToReadableText(string jsonContent, string fileName)
+        {
+            try
+            {
+                // Пытаемся распарсить JSON
+                using JsonDocument doc = JsonDocument.Parse(jsonContent);
+                
+                StringBuilder result = new StringBuilder();
+                
+                // Извлекаем основные данные
+                var root = doc.RootElement;
+                
+                // Для файлов с эмоциями - форматируем специально
+                if (fileName.Contains("emotion", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.AppendLine("ДАННЫЕ АНАЛИЗА ЭМОЦИЙ:");
+                    
+                    if (root.TryGetProperty("timestamp", out JsonElement timestamp))
+                        result.AppendLine($"Время записи: {timestamp}");
+                    
+                    if (root.TryGetProperty("duration", out JsonElement duration))
+                        result.AppendLine($"Длительность: {duration} сек");
+                    
+                    if (root.TryGetProperty("emotions", out JsonElement emotions))
+                    {
+                        result.AppendLine("\nЭмоциональные показатели:");
+                        result.AppendLine(FormatEmotions(emotions));
+                    }
+                    
+                    if (root.TryGetProperty("average_intensity", out JsonElement intensity))
+                        result.AppendLine($"Средняя интенсивность: {intensity}");
+                    
+                    return result.ToString();
+                }
+                
+                // Общий случай - просто форматируем JSON
+                using var stream = new MemoryStream();
+                using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions 
+                { 
+                    Indented = true,
+                    Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                });
+                
+                doc.WriteTo(writer);
+                writer.Flush();
+                
+                string formattedJson = Encoding.UTF8.GetString(stream.ToArray());
+                
+                // Ограничиваем размер
+                if (formattedJson.Length > 5000)
+                {
+                    return formattedJson.Substring(0, 5000) + "\n... (файл слишком большой, показана только часть)";
+                }
+                
+                return formattedJson;
+            }
+            catch (JsonException)
+            {
+                // Если не JSON, очищаем текст
+                return CleanText(jsonContent);
+            }
+        }
+        
+        private string FormatEmotions(JsonElement emotions)
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            if (emotions.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var emotion in emotions.EnumerateObject())
+                {
+                    sb.AppendLine($"  {emotion.Name}: {emotion.Value}");
+                }
+            }
+            else if (emotions.ValueKind == JsonValueKind.Array)
+            {
+                int count = 0;
+                foreach (var item in emotions.EnumerateArray())
+                {
+                    if (count++ > 20) // Ограничиваем количество
+                    {
+                        sb.AppendLine("  ... (и еще записи)");
+                        break;
+                    }
+                    
+                    if (item.ValueKind == JsonValueKind.Object)
+                    {
+                        if (item.TryGetProperty("time", out JsonElement time))
+                            sb.Append($"  Время {time}: ");
+                        
+                        if (item.TryGetProperty("emotion", out JsonElement emotion))
+                            sb.AppendLine($"{emotion}");
+                    }
+                }
+            }
+            
+            return sb.ToString();
+        }
+        
+        private string CleanText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            
+            // Удаляем все не-ASCII символы
+            StringBuilder clean = new StringBuilder();
+            foreach (char c in text)
+            {
+                if (c < 128) // Только ASCII символы
+                {
+                    clean.Append(c);
+                }
+            }
+            
+            // Ограничиваем размер
+            string result = clean.ToString();
+            if (result.Length > 2000)
+            {
+                result = result.Substring(0, 2000) + "\n... (текст слишком большой, показана только часть)";
+            }
+            
+            return result;
+        }
+        
+        private string CleanForAi(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            
+            // Удаляем эмодзи и специальные символы
+            StringBuilder clean = new StringBuilder();
+            foreach (char c in text)
+            {
+                // Оставляем только печатаемые ASCII символы и русские буквы
+                if ((c >= 32 && c <= 126) || // ASCII печатаемые
+                    (c >= 'А' && c <= 'я') || // Русские буквы
+                    c == 'ё' || c == 'Ё' || // Буква ё
+                    c == '\n' || c == '\r' || c == '\t' || // Управляющие символы
+                    c == ' ' || c == '.' || c == ',' || c == ':' || c == ';' || // Знаки препинания
+                    c == '!' || c == '?' || c == '-' || c == '_' || c == '(' || c == ')')
+                {
+                    clean.Append(c);
+                }
+            }
+            
+            return clean.ToString();
         }
         
         // Метод для установки отчета от нейронной сети
@@ -44,10 +382,9 @@ namespace EmotionAnalyzer.Components
             
             _currentReport = report;
             
-     
-                // Показываем уведомление пользователю
+            // Показываем уведомление пользователю
             var netReport = new NeuroStats();
-            Markdown = _currentReport;
+            netReport.setMarkdown(_currentReport);
             netReport.Show();
         }
         
@@ -65,53 +402,6 @@ namespace EmotionAnalyzer.Components
             }
         }
         
-        
-        private void UpdateReportDisplay()
-        {
-            // Показываем только первые 200 символов отчета в AverageMetric
-            if (!string.IsNullOrEmpty(_currentReport))
-            {
-                string preview = _currentReport.Length > 200 
-                    ? _currentReport.Substring(0, 200) + "..." 
-                    : _currentReport;
-            }
-        }
-        
-        // Метод для добавления временных меток высокой активности из бэка
-        public void AddHighActivityTimestamp(string timestamp)
-        {
-            // Создание кнопки с временной меткой
-            // Будет реализовано другими разработчиками
-        }
-
-        // Метод для добавления временных меток низкой активности из бэка
-        public void AddLowActivityTimestamp(string timestamp)
-        {
-            // Создание кнопки с временной меткой
-            // Будет реализовано другими разработчиками
-        }
-
-        // Метод для обновления среднего показателя
-        public void UpdateAverageMetric(string metric)
-        {
-            // Обновление текста среднего показателя
-            // Будет реализовано другими разработчиками
-        }
-
-        // Метод для очистки всех временных меток
-        public void ClearTimestamps()
-        {
-            // Очистка контейнеров с метками
-            // Будет реализовано другими разработчиками
-        }
-
-        // Обработчик нажатия на временную метку
-        private void TimestampButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Переход к указанному времени в видео
-            // Будет реализовано другими разработчиками
-        }
-
         // Обработчик кнопки открытия полного результата
         private void OpenFullResultsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -129,7 +419,17 @@ namespace EmotionAnalyzer.Components
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 
                 // Вызываем анализ через AiAnalytics
-                anal.requestAnalytics(RealTimeDataManager.Instance.GetCompactJson());
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await anal.requestAnalytics(RealTimeDataManager.Instance.GetCompactJson());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Ошибка при запросе анализа: {ex.Message}");
+                    }
+                });
             }
         }
         
@@ -301,7 +601,7 @@ namespace EmotionAnalyzer.Components
                                            $"=================================\n\n" +
                                            _currentReport;
                         
-                        System.IO.File.WriteAllText(saveDialog.FileName, fullReport);
+                        System.IO.File.WriteAllText(saveDialog.FileName, fullReport, Encoding.UTF8);
                         
                         MessageBox.Show($"Отчет сохранен в файл:\n{saveDialog.FileName}", 
                             "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -338,7 +638,6 @@ namespace EmotionAnalyzer.Components
         {
             return _currentReport;
         }
-       
         
         // Метод для проверки, есть ли отчет
         public bool HasReport()
